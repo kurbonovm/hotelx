@@ -95,7 +95,7 @@ jobs:
               "portMappings": [{"containerPort": 8080, "protocol": "tcp"}],
               "environment": [
                 {"name": "SPRING_PROFILES_ACTIVE", "value": "prod"},
-                {"name": "FRONTEND_URL", "value": "http://hotel-reservation-system-backend.s3-website-us-east-1.amazonaws.com"}
+                {"name": "FRONTEND_URL", "value": "https://d32joxegsl0xnf.cloudfront.net"}
               ],
               "secrets": [
                 {"name": "MONGODB_URI", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/prod/documentdb-connection-uri-MkmZcC"},
@@ -166,7 +166,7 @@ jobs:
               "portMappings": [{"containerPort": 8080, "protocol": "tcp"}],
               "environment": [
                 {"name": "SPRING_PROFILES_ACTIVE", "value": "prod"},
-                {"name": "FRONTEND_URL", "value": "http://hotel-reservation-system-backend.s3-website-us-east-1.amazonaws.com"}
+                {"name": "FRONTEND_URL", "value": "https://d32joxegsl0xnf.cloudfront.net"}
               ],
               "secrets": [
                 {"name": "MONGODB_URI", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/prod/documentdb-connection-uri-MkmZcC"},
