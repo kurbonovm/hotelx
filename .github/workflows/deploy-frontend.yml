@@ -10,7 +10,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  S3_BUCKET: hotel-reservation-system-backend
+  S3_BUCKET: hotel-reservation-frontend-us-east-1
   CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
 
 jobs:
