@@ -1,0 +1,81 @@
+spring:
+  application:
+    name: hotel-reservation-system
+
+  # MongoDB Configuration
+  data:
+    mongodb: 
+      uri: ${MONGODB_URI}
+      database: hotel_reservation
+      # DocumentDB SSL Configuration
+      auto-index-creation: true
+
+  # Security OAuth2 Configuration
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:your-google-client-id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:your-google-client-secret}
+            scope:
+              - profile
+              - email
+          facebook:
+            client-id: ${FACEBOOK_CLIENT_ID:your-facebook-client-id}
+            client-secret: ${FACEBOOK_CLIENT_SECRET:your-facebook-client-secret}
+            scope:
+              - public_profile
+              - email
+
+  # Email Configuration
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME:your-email@gmail.com}
+    password: ${EMAIL_PASSWORD:your-email-password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  # File Upload Configuration
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+# Server Configuration
+server:
+  port: 8080
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:your-secret-key-here-change-in-production-minimum-256-bits}
+  expiration: ${JWT_EXPIRATION:86400000}
+
+# Stripe Configuration
+stripe:
+  api:
+    key: ${STRIPE_API_KEY}
+  webhook:
+    secret: ${STRIPE_WEBHOOK_SECRET}
+
+# Application Configuration
+app:
+  # Frontend URL for OAuth2 redirects
+  frontend:
+    url: ${FRONTEND_URL:http://localhost}
+
+  # CORS Configuration
+  cors:
+    allowed-origins: http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:3000,http://localhost,http://localhost:80,http://hotel-reservation-system-backend.s3-website-us-east-1.amazonaws.com
+
+# Logging Configuration
+logging:
+  level:
+    com.hotel.reservation: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: INFO

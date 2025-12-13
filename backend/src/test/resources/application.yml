@@ -1,0 +1,69 @@
+spring:
+  application:
+    name: Hotel Reservation System Test
+
+  # MongoDB Test Configuration
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/test_db
+      database: test_db
+      auto-index-creation: true
+
+  # Email Configuration for Tests
+  mail:
+    host: localhost
+    port: 1025
+    username: test@example.com
+    password: test
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+  # OAuth2 Configuration for Tests
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: test-google-client-id
+            client-secret: test-google-client-secret
+            redirect-uri: http://localhost:8080/oauth2/callback/google
+            scope:
+              - email
+              - profile
+          facebook:
+            client-id: test-facebook-client-id
+            client-secret: test-facebook-client-secret
+            redirect-uri: http://localhost:8080/oauth2/callback/facebook
+            scope:
+              - email
+              - public_profile
+
+# JWT Configuration for Tests
+jwt:
+  secret: test-secret-key-for-unit-tests-minimum-256-bits-long-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  expiration: 86400000
+
+# Stripe Configuration for Tests
+stripe:
+  api:
+    key: sk_test_dummy_key_for_testing
+  webhook:
+    secret: whsec_dummy_webhook_secret_for_testing
+
+# Application Configuration
+app:
+  frontend:
+    url: http://localhost:3000
+  cors:
+    allowed-origins: http://localhost:3000
+
+# Logging
+logging:
+  level:
+    org.springframework.data.mongodb: INFO
+    com.hotel.reservation: INFO
+    org.springframework.test: INFO

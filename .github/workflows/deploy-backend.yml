@@ -1,0 +1,222 @@
+name: Deploy Backend to AWS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy-backend.yml'
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: hotel-reservation-backend
+  ECS_CLUSTER: hotel-reservation-prod-cluster
+  ECS_SERVICE: hotel-reservation-backend-service
+  CONTAINER_NAME: hotel-reservation-backend
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          cd backend
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Check if ECS service exists
+        id: check-service
+        run: |
+          if aws ecs describe-services --cluster $ECS_CLUSTER --services $ECS_SERVICE --region $AWS_REGION --query 'services[0].status' --output text 2>/dev/null | grep -q "ACTIVE"; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create ECS task definition
+        if: steps.check-service.outputs.exists == 'false'
+        id: create-task-def
+        run: |
+          EXECUTION_ROLE=$(aws iam list-roles --query "Roles[?RoleName=='ecsTaskExecutionRole'].Arn" --output text)
+
+          if [ -z "$EXECUTION_ROLE" ]; then
+            echo "Creating ecsTaskExecutionRole..."
+            aws iam create-role --role-name ecsTaskExecutionRole --assume-role-policy-document '{
+              "Version": "2012-10-17",
+              "Statement": [{
+                "Effect": "Allow",
+                "Principal": {"Service": "ecs-tasks.amazonaws.com"},
+                "Action": "sts:AssumeRole"
+              }]
+            }'
+            aws iam attach-role-policy --role-name ecsTaskExecutionRole --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+            aws iam attach-role-policy --role-name ecsTaskExecutionRole --policy-arn arn:aws:iam::aws:policy/SecretsManagerReadWrite
+            sleep 10
+            EXECUTION_ROLE=$(aws iam get-role --role-name ecsTaskExecutionRole --query 'Role.Arn' --output text)
+          fi
+
+          TASK_DEF_ARN=$(aws ecs register-task-definition \
+            --family hotel-reservation-backend \
+            --network-mode awsvpc \
+            --requires-compatibilities FARGATE \
+            --cpu 512 \
+            --memory 1024 \
+            --execution-role-arn "$EXECUTION_ROLE" \
+            --container-definitions '[{
+              "name": "'$CONTAINER_NAME'",
+              "image": "'${{ steps.build-image.outputs.image }}'",
+              "cpu": 512,
+              "memory": 1024,
+              "essential": true,
+              "portMappings": [{"containerPort": 8080, "protocol": "tcp"}],
+              "environment": [
+                {"name": "SPRING_PROFILES_ACTIVE", "value": "prod"},
+                {"name": "FRONTEND_URL", "value": "http://hotel-reservation-system-backend.s3-website-us-east-1.amazonaws.com"}
+              ],
+              "secrets": [
+                {"name": "MONGODB_URI", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/prod/documentdb-connection-uri"},
+                {"name": "JWT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/jwt-secret"},
+                {"name": "STRIPE_API_KEY", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/stripe-api-key"},
+                {"name": "STRIPE_WEBHOOK_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/stripe-webhook-secret"},
+                {"name": "EMAIL_USERNAME", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/email-username"},
+                {"name": "EMAIL_PASSWORD", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/email-password"}
+              ],
+              "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                  "awslogs-group": "/ecs/hotel-reservation-backend",
+                  "awslogs-region": "'$AWS_REGION'",
+                  "awslogs-stream-prefix": "ecs",
+                  "awslogs-create-group": "true"
+                }
+              },
+              "healthCheck": {
+                "command": ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:8080/actuator/health || exit 1"],
+                "interval": 30,
+                "timeout": 5,
+                "retries": 3,
+                "startPeriod": 60
+              }
+            }]' \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text)
+
+          echo "task-def-arn=$TASK_DEF_ARN" >> $GITHUB_OUTPUT
+
+      - name: Create ECS service
+        if: steps.check-service.outputs.exists == 'false'
+        run: |
+          PRIVATE_SUBNET_1=$(aws cloudformation describe-stacks --stack-name hotel-reservation-prod-network --query "Stacks[0].Outputs[?OutputKey=='PrivateSubnet1Id'].OutputValue" --output text)
+          PRIVATE_SUBNET_2=$(aws cloudformation describe-stacks --stack-name hotel-reservation-prod-network --query "Stacks[0].Outputs[?OutputKey=='PrivateSubnet2Id'].OutputValue" --output text)
+
+          ECS_SG=$(aws ec2 describe-security-groups --filters "Name=group-name,Values=hotel-reservation-prod-ecs-sg" --query "SecurityGroups[0].GroupId" --output text)
+
+          aws ecs create-service \
+            --cluster $ECS_CLUSTER \
+            --service-name $ECS_SERVICE \
+            --task-definition ${{ steps.create-task-def.outputs.task-def-arn }} \
+            --desired-count 1 \
+            --launch-type FARGATE \
+            --network-configuration "awsvpcConfiguration={subnets=[$PRIVATE_SUBNET_1,$PRIVATE_SUBNET_2],securityGroups=[$ECS_SG],assignPublicIp=ENABLED}"
+
+      - name: Update existing ECS service
+        if: steps.check-service.outputs.exists == 'true'
+        run: |
+          TASK_DEF_ARN=$(aws ecs describe-task-definition --task-definition hotel-reservation-backend --query 'taskDefinition.taskDefinitionArn' --output text)
+
+          EXECUTION_ROLE=$(aws iam get-role --role-name ecsTaskExecutionRole --query 'Role.Arn' --output text)
+
+          NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
+            --family hotel-reservation-backend \
+            --network-mode awsvpc \
+            --requires-compatibilities FARGATE \
+            --cpu 512 \
+            --memory 1024 \
+            --execution-role-arn "$EXECUTION_ROLE" \
+            --container-definitions '[{
+              "name": "'$CONTAINER_NAME'",
+              "image": "'${{ steps.build-image.outputs.image }}'",
+              "cpu": 512,
+              "memory": 1024,
+              "essential": true,
+              "portMappings": [{"containerPort": 8080, "protocol": "tcp"}],
+              "environment": [
+                {"name": "SPRING_PROFILES_ACTIVE", "value": "prod"},
+                {"name": "FRONTEND_URL", "value": "http://hotel-reservation-system-backend.s3-website-us-east-1.amazonaws.com"}
+              ],
+              "secrets": [
+                {"name": "MONGODB_URI", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/prod/documentdb-connection-uri"},
+                {"name": "JWT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/jwt-secret"},
+                {"name": "STRIPE_API_KEY", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/stripe-api-key"},
+                {"name": "STRIPE_WEBHOOK_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/stripe-webhook-secret"},
+                {"name": "EMAIL_USERNAME", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/email-username"},
+                {"name": "EMAIL_PASSWORD", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/email-password"}
+              ],
+              "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                  "awslogs-group": "/ecs/hotel-reservation-backend",
+                  "awslogs-region": "'$AWS_REGION'",
+                  "awslogs-stream-prefix": "ecs",
+                  "awslogs-create-group": "true"
+                }
+              },
+              "healthCheck": {
+                "command": ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:8080/actuator/health || exit 1"],
+                "interval": 30,
+                "timeout": 5,
+                "retries": 3,
+                "startPeriod": 60
+              }
+            }]' \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text)
+
+          aws ecs update-service \
+            --cluster $ECS_CLUSTER \
+            --service $ECS_SERVICE \
+            --task-definition $NEW_TASK_DEF_ARN \
+            --force-new-deployment
+
+      - name: Wait for service stability
+        run: |
+          aws ecs wait services-stable --cluster $ECS_CLUSTER --services $ECS_SERVICE --region $AWS_REGION
+          echo "Backend deployed successfully!"
+
+      - name: Get backend public IP
+        id: get-ip
+        run: |
+          TASK_ARN=$(aws ecs list-tasks --cluster $ECS_CLUSTER --service-name $ECS_SERVICE --region $AWS_REGION --query 'taskArns[0]' --output text)
+
+          if [ "$TASK_ARN" != "None" ]; then
+            ENI_ID=$(aws ecs describe-tasks --cluster $ECS_CLUSTER --tasks $TASK_ARN --region $AWS_REGION --query 'tasks[0].attachments[0].details[?name==`networkInterfaceId`].value' --output text)
+            PUBLIC_IP=$(aws ec2 describe-network-interfaces --network-interface-ids $ENI_ID --region $AWS_REGION --query 'NetworkInterfaces[0].Association.PublicIp' --output text)
+
+            echo "Backend API URL: http://$PUBLIC_IP:8080"
+            echo "Health Check: http://$PUBLIC_IP:8080/actuator/health"
+            echo "Add this to GitHub Secrets as BACKEND_API_URL: http://$PUBLIC_IP:8080/api"
+          fi
