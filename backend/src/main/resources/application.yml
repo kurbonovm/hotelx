@@ -71,7 +71,7 @@ app:
 
   # CORS Configuration
   cors:
-    allowed-origins: http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:3000,http://localhost,http://localhost:80,http://hotel-reservation-frontend-us-east-1.s3-website-us-east-1.amazonaws.com,https://d32joxegsl0xnf.cloudfront.net,http://hotel-reservation-alb-1402628275.us-east-1.elb.amazonaws.com
+    allowed-origins: http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:3000,http://localhost,http://localhost:80,http://hotel-reservation-frontend-us-east-1.s3-website-us-east-1.amazonaws.com,https://d32joxegsl0xnf.cloudfront.net,http://hotel-reservation-alb-1402628275.us-east-1.elb.amazonaws.com,https://d1otlwpcr6195.cloudfront.net
 
 # Logging Configuration
 logging:
