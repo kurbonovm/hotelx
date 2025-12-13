@@ -103,7 +103,10 @@ jobs:
                 {"name": "STRIPE_API_KEY", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/stripe-api-key-eZPSdO"},
                 {"name": "STRIPE_WEBHOOK_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/stripe-webhook-secret-S9rb8t"},
                 {"name": "EMAIL_USERNAME", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/email-username-8ALSYd"},
-                {"name": "EMAIL_PASSWORD", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/email-password-GFI4oH"}
+                {"name": "EMAIL_PASSWORD", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/email-password-GFI4oH"},
+                {"name": "GOOGLE_CLIENT_ID", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/google-client-id-mjRbIf"},
+                {"name": "GOOGLE_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/google-client-secret-nlj3vY"},
+                {"name": "BACKEND_URL", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/backend-url-Zj35JO"}
               ],
               "logConfiguration": {
                 "logDriver": "awslogs",
@@ -174,7 +177,10 @@ jobs:
                 {"name": "STRIPE_API_KEY", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/stripe-api-key-eZPSdO"},
                 {"name": "STRIPE_WEBHOOK_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/stripe-webhook-secret-S9rb8t"},
                 {"name": "EMAIL_USERNAME", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/email-username-8ALSYd"},
-                {"name": "EMAIL_PASSWORD", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/email-password-GFI4oH"}
+                {"name": "EMAIL_PASSWORD", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/email-password-GFI4oH"},
+                {"name": "GOOGLE_CLIENT_ID", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/google-client-id-mjRbIf"},
+                {"name": "GOOGLE_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/google-client-secret-nlj3vY"},
+                {"name": "BACKEND_URL", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/backend-url-Zj35JO"}
               ],
               "logConfiguration": {
                 "logDriver": "awslogs",
