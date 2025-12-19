@@ -5,8 +5,8 @@ spring:
   # MongoDB Configuration
   data:
     mongodb: 
-      uri: ${MONGODB_URI}
-      database: hotel_reservation
+      uri: ${DATABASE_URI}
+      database: ${DATABASE_NAME}
       # DocumentDB SSL Configuration
       auto-index-creation: true
 
@@ -16,26 +16,26 @@ spring:
       client:
         registration:
           google:
-            client-id: ${GOOGLE_CLIENT_ID:your-google-client-id}
-            client-secret: ${GOOGLE_CLIENT_SECRET:your-google-client-secret}
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
             scope:
               - profile
               - email
-            redirect-uri: ${BACKEND_URL:http://localhost:8080}/login/oauth2/code/google
+            redirect-uri: ${BACKEND_URL}/login/oauth2/code/google
           facebook:
-            client-id: ${FACEBOOK_CLIENT_ID:your-facebook-client-id}
-            client-secret: ${FACEBOOK_CLIENT_SECRET:your-facebook-client-secret}
+            client-id: ${FACEBOOK_CLIENT_ID:}
+            client-secret: ${FACEBOOK_CLIENT_SECRET}
             scope:
               - public_profile
               - email
-            redirect-uri: ${BACKEND_URL:http://localhost:8080}/login/oauth2/code/facebook
+            redirect-uri: ${BACKEND_URL}/login/oauth2/code/facebook
 
   # Email Configuration
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${EMAIL_USERNAME:your-email@gmail.com}
-    password: ${EMAIL_PASSWORD:your-email-password}
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -55,8 +55,8 @@ server:
 
 # JWT Configuration
 jwt:
-  secret: ${JWT_SECRET:your-secret-key-here-change-in-production-minimum-256-bits}
-  expiration: ${JWT_EXPIRATION:86400000}
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION}
 
 # Stripe Configuration
 stripe:
@@ -69,19 +69,19 @@ stripe:
 app:
   # Backend base URL for OAuth2 redirects (HTTPS CloudFront URL)
   backend:
-    url: ${BACKEND_URL:http://localhost:8080}
+    url: ${BACKEND_URL}
 
   # Frontend URL for OAuth2 redirects
   frontend:
-    url: ${FRONTEND_URL:http://localhost}
+    url: ${FRONTEND_URL}
 
   # CORS Configuration
   cors:
-    allowed-origins: http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:3000,http://localhost,http://localhost:80,http://hotel-reservation-frontend-us-east-1.s3-website-us-east-1.amazonaws.com,https://d32joxegsl0xnf.cloudfront.net,http://hotel-reservation-alb-1402628275.us-east-1.elb.amazonaws.com,https://d1otlwpcr6195.cloudfront.net
+    allowed-origins: ${FRONTEND_URL}
 
 # Logging Configuration
 logging:
   level:
-    com.hotel.reservation: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.web: INFO
+    '[com.hotel.reservation]': DEBUG
+    '[org.springframework.security]': DEBUG
+    '[org.springframework.web]': INFO

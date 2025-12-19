@@ -6,7 +6,6 @@ import com.hotel.reservation.security.oauth2.CustomOAuth2UserService;
 import com.hotel.reservation.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import com.hotel.reservation.security.oauth2.OAuth2AuthenticationFailureHandler;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
