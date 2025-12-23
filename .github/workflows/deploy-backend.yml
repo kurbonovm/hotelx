@@ -75,8 +75,37 @@ jobs:
             }'
             aws iam attach-role-policy --role-name ecsTaskExecutionRole --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
             aws iam attach-role-policy --role-name ecsTaskExecutionRole --policy-arn arn:aws:iam::aws:policy/SecretsManagerReadWrite
+
+            # Add CloudWatch Logs permissions
+            aws iam put-role-policy --role-name ecsTaskExecutionRole --policy-name CloudWatchLogsPolicy --policy-document '{
+              "Version": "2012-10-17",
+              "Statement": [{
+                "Effect": "Allow",
+                "Action": [
+                  "logs:CreateLogGroup",
+                  "logs:CreateLogStream",
+                  "logs:PutLogEvents"
+                ],
+                "Resource": "arn:aws:logs:*:*:*"
+              }]
+            }'
+
             sleep 10
             EXECUTION_ROLE=$(aws iam get-role --role-name ecsTaskExecutionRole --query 'Role.Arn' --output text)
+          else
+            # Ensure CloudWatch Logs permissions exist on existing role
+            aws iam put-role-policy --role-name ecsTaskExecutionRole --policy-name CloudWatchLogsPolicy --policy-document '{
+              "Version": "2012-10-17",
+              "Statement": [{
+                "Effect": "Allow",
+                "Action": [
+                  "logs:CreateLogGroup",
+                  "logs:CreateLogStream",
+                  "logs:PutLogEvents"
+                ],
+                "Resource": "arn:aws:logs:*:*:*"
+              }]
+            }' || true
           fi
 
           TASK_DEF_ARN=$(aws ecs register-task-definition \
@@ -160,6 +189,20 @@ jobs:
         if: steps.check-service.outputs.exists == 'true'
         run: |
           TASK_DEF_ARN=$(aws ecs describe-task-definition --task-definition hotelx-backend --query 'taskDefinition.taskDefinitionArn' --output text)
+
+          # Ensure CloudWatch Logs permissions exist
+          aws iam put-role-policy --role-name ecsTaskExecutionRole --policy-name CloudWatchLogsPolicy --policy-document '{
+            "Version": "2012-10-17",
+            "Statement": [{
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+              ],
+              "Resource": "arn:aws:logs:*:*:*"
+            }]
+          }' || true
 
           EXECUTION_ROLE=$(aws iam get-role --role-name ecsTaskExecutionRole --query 'Role.Arn' --output text)
 
