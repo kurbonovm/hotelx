@@ -98,15 +98,15 @@ jobs:
                 {"name": "FRONTEND_URL", "value": "https://d32joxegsl0xnf.cloudfront.net"}
               ],
               "secrets": [
-                {"name": "MONGODB_URI", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/prod/documentdb-connection-uri-MkmZcC"},
-                {"name": "JWT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/jwt-secret-rtNWaV"},
-                {"name": "STRIPE_API_KEY", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/stripe-api-key-eZPSdO"},
-                {"name": "STRIPE_WEBHOOK_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/stripe-webhook-secret-S9rb8t"},
-                {"name": "EMAIL_USERNAME", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/email-username-8ALSYd"},
-                {"name": "EMAIL_PASSWORD", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/email-password-GFI4oH"},
-                {"name": "GOOGLE_CLIENT_ID", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/google-client-id-mjRbIf"},
-                {"name": "GOOGLE_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/google-client-secret-nlj3vY"},
-                {"name": "BACKEND_URL", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/backend-url-Zj35JO"}
+                {"name": "MONGODB_URI", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/prod/documentdb-connection-uri-ROC0dD"},
+                {"name": "JWT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/jwt-secret-MRFiPc"},
+                {"name": "STRIPE_API_KEY", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/stripe-api-key-mXzdl3"},
+                {"name": "STRIPE_WEBHOOK_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/stripe-webhook-secret-pBzA9O"},
+                {"name": "EMAIL_USERNAME", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/email-username-o2W9aZ"},
+                {"name": "EMAIL_PASSWORD", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/email-password-FK62Sw"},
+                {"name": "GOOGLE_CLIENT_ID", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/google-client-id-YA7gjn"},
+                {"name": "GOOGLE_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/google-client-secret-y57Z1N"},
+                {"name": "BACKEND_URL", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/backend-url-Qz2w62"}
               ],
               "logConfiguration": {
                 "logDriver": "awslogs",
@@ -133,10 +133,18 @@ jobs:
       - name: Create ECS service
         if: steps.check-service.outputs.exists == 'false'
         run: |
-          PRIVATE_SUBNET_1=$(aws cloudformation describe-stacks --stack-name hotelx-prod-network --query "Stacks[0].Outputs[?OutputKey=='PrivateSubnet1Id'].OutputValue" --output text)
-          PRIVATE_SUBNET_2=$(aws cloudformation describe-stacks --stack-name hotelx-prod-network --query "Stacks[0].Outputs[?OutputKey=='PrivateSubnet2Id'].OutputValue" --output text)
+          # Get VPC ID
+          VPC_ID=$(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=hotelx-prod-vpc" --query 'Vpcs[0].VpcId' --output text --region $AWS_REGION)
 
-          ECS_SG=$(aws ec2 describe-security-groups --filters "Name=group-name,Values=hotelx-prod-ecs-sg" --query "SecurityGroups[0].GroupId" --output text)
+          # Get private subnets
+          PRIVATE_SUBNET_1=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=$VPC_ID" "Name=tag:Name,Values=hotelx-private-subnet-1" --query 'Subnets[0].SubnetId' --output text --region $AWS_REGION)
+          PRIVATE_SUBNET_2=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=$VPC_ID" "Name=tag:Name,Values=hotelx-private-subnet-2" --query 'Subnets[0].SubnetId' --output text --region $AWS_REGION)
+
+          # Get ECS security group
+          ECS_SG=$(aws ec2 describe-security-groups --filters "Name=vpc-id,Values=$VPC_ID" "Name=tag:Name,Values=hotelx-prod-ecs-sg" --query "SecurityGroups[0].GroupId" --output text --region $AWS_REGION)
+
+          # Get target group ARN
+          TG_ARN=$(aws elbv2 describe-target-groups --names hotelx-backend-tg --query 'TargetGroups[0].TargetGroupArn' --output text --region $AWS_REGION)
 
           aws ecs create-service \
             --cluster $ECS_CLUSTER \
@@ -144,7 +152,9 @@ jobs:
             --task-definition ${{ steps.create-task-def.outputs.task-def-arn }} \
             --desired-count 1 \
             --launch-type FARGATE \
-            --network-configuration "awsvpcConfiguration={subnets=[$PRIVATE_SUBNET_1,$PRIVATE_SUBNET_2],securityGroups=[$ECS_SG],assignPublicIp=ENABLED}"
+            --network-configuration "awsvpcConfiguration={subnets=[$PRIVATE_SUBNET_1,$PRIVATE_SUBNET_2],securityGroups=[$ECS_SG],assignPublicIp=ENABLED}" \
+            --load-balancers "targetGroupArn=$TG_ARN,containerName=$CONTAINER_NAME,containerPort=8080" \
+            --health-check-grace-period-seconds 60
 
       - name: Update existing ECS service
         if: steps.check-service.outputs.exists == 'true'
@@ -172,15 +182,15 @@ jobs:
                 {"name": "FRONTEND_URL", "value": "https://d32joxegsl0xnf.cloudfront.net"}
               ],
               "secrets": [
-                {"name": "MONGODB_URI", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/prod/documentdb-connection-uri-MkmZcC"},
-                {"name": "JWT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/jwt-secret-rtNWaV"},
-                {"name": "STRIPE_API_KEY", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/stripe-api-key-eZPSdO"},
-                {"name": "STRIPE_WEBHOOK_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/stripe-webhook-secret-S9rb8t"},
-                {"name": "EMAIL_USERNAME", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/email-username-8ALSYd"},
-                {"name": "EMAIL_PASSWORD", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/email-password-GFI4oH"},
-                {"name": "GOOGLE_CLIENT_ID", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/google-client-id-mjRbIf"},
-                {"name": "GOOGLE_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/google-client-secret-nlj3vY"},
-                {"name": "BACKEND_URL", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/backend-url-Zj35JO"}
+                {"name": "MONGODB_URI", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/prod/documentdb-connection-uri-ROC0dD"},
+                {"name": "JWT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/jwt-secret-MRFiPc"},
+                {"name": "STRIPE_API_KEY", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/stripe-api-key-mXzdl3"},
+                {"name": "STRIPE_WEBHOOK_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/stripe-webhook-secret-pBzA9O"},
+                {"name": "EMAIL_USERNAME", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/email-username-o2W9aZ"},
+                {"name": "EMAIL_PASSWORD", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/email-password-FK62Sw"},
+                {"name": "GOOGLE_CLIENT_ID", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/google-client-id-YA7gjn"},
+                {"name": "GOOGLE_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/google-client-secret-y57Z1N"},
+                {"name": "BACKEND_URL", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/backend-url-Qz2w62"}
               ],
               "logConfiguration": {
                 "logDriver": "awslogs",
