@@ -10,10 +10,10 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: hotel-reservation-backend
-  ECS_CLUSTER: hotel-reservation-prod-cluster
-  ECS_SERVICE: hotel-reservation-backend-service
-  CONTAINER_NAME: hotel-reservation-backend
+  ECR_REPOSITORY: hotelx-backend
+  ECS_CLUSTER: hotelx-prod-cluster
+  ECS_SERVICE: hotelx-backend-service
+  CONTAINER_NAME: hotelx-backend
 
 jobs:
   build-and-deploy:
@@ -80,7 +80,7 @@ jobs:
           fi
 
           TASK_DEF_ARN=$(aws ecs register-task-definition \
-            --family hotel-reservation-backend \
+            --family hotelx-backend \
             --network-mode awsvpc \
             --requires-compatibilities FARGATE \
             --cpu 1024 \
@@ -98,20 +98,20 @@ jobs:
                 {"name": "FRONTEND_URL", "value": "https://d32joxegsl0xnf.cloudfront.net"}
               ],
               "secrets": [
-                {"name": "MONGODB_URI", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/prod/documentdb-connection-uri-MkmZcC"},
-                {"name": "JWT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/jwt-secret-rtNWaV"},
-                {"name": "STRIPE_API_KEY", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/stripe-api-key-eZPSdO"},
-                {"name": "STRIPE_WEBHOOK_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/stripe-webhook-secret-S9rb8t"},
-                {"name": "EMAIL_USERNAME", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/email-username-8ALSYd"},
-                {"name": "EMAIL_PASSWORD", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/email-password-GFI4oH"},
-                {"name": "GOOGLE_CLIENT_ID", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/google-client-id-mjRbIf"},
-                {"name": "GOOGLE_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/google-client-secret-nlj3vY"},
-                {"name": "BACKEND_URL", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/backend-url-Zj35JO"}
+                {"name": "MONGODB_URI", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/prod/documentdb-connection-uri-MkmZcC"},
+                {"name": "JWT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/jwt-secret-rtNWaV"},
+                {"name": "STRIPE_API_KEY", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/stripe-api-key-eZPSdO"},
+                {"name": "STRIPE_WEBHOOK_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/stripe-webhook-secret-S9rb8t"},
+                {"name": "EMAIL_USERNAME", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/email-username-8ALSYd"},
+                {"name": "EMAIL_PASSWORD", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/email-password-GFI4oH"},
+                {"name": "GOOGLE_CLIENT_ID", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/google-client-id-mjRbIf"},
+                {"name": "GOOGLE_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/google-client-secret-nlj3vY"},
+                {"name": "BACKEND_URL", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/backend-url-Zj35JO"}
               ],
               "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
-                  "awslogs-group": "/ecs/hotel-reservation-backend",
+                  "awslogs-group": "/ecs/hotelx-backend",
                   "awslogs-region": "'$AWS_REGION'",
                   "awslogs-stream-prefix": "ecs",
                   "awslogs-create-group": "true"
@@ -133,10 +133,10 @@ jobs:
       - name: Create ECS service
         if: steps.check-service.outputs.exists == 'false'
         run: |
-          PRIVATE_SUBNET_1=$(aws cloudformation describe-stacks --stack-name hotel-reservation-prod-network --query "Stacks[0].Outputs[?OutputKey=='PrivateSubnet1Id'].OutputValue" --output text)
-          PRIVATE_SUBNET_2=$(aws cloudformation describe-stacks --stack-name hotel-reservation-prod-network --query "Stacks[0].Outputs[?OutputKey=='PrivateSubnet2Id'].OutputValue" --output text)
+          PRIVATE_SUBNET_1=$(aws cloudformation describe-stacks --stack-name hotelx-prod-network --query "Stacks[0].Outputs[?OutputKey=='PrivateSubnet1Id'].OutputValue" --output text)
+          PRIVATE_SUBNET_2=$(aws cloudformation describe-stacks --stack-name hotelx-prod-network --query "Stacks[0].Outputs[?OutputKey=='PrivateSubnet2Id'].OutputValue" --output text)
 
-          ECS_SG=$(aws ec2 describe-security-groups --filters "Name=group-name,Values=hotel-reservation-prod-ecs-sg" --query "SecurityGroups[0].GroupId" --output text)
+          ECS_SG=$(aws ec2 describe-security-groups --filters "Name=group-name,Values=hotelx-prod-ecs-sg" --query "SecurityGroups[0].GroupId" --output text)
 
           aws ecs create-service \
             --cluster $ECS_CLUSTER \
@@ -149,12 +149,12 @@ jobs:
       - name: Update existing ECS service
         if: steps.check-service.outputs.exists == 'true'
         run: |
-          TASK_DEF_ARN=$(aws ecs describe-task-definition --task-definition hotel-reservation-backend --query 'taskDefinition.taskDefinitionArn' --output text)
+          TASK_DEF_ARN=$(aws ecs describe-task-definition --task-definition hotelx-backend --query 'taskDefinition.taskDefinitionArn' --output text)
 
           EXECUTION_ROLE=$(aws iam get-role --role-name ecsTaskExecutionRole --query 'Role.Arn' --output text)
 
           NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
-            --family hotel-reservation-backend \
+            --family hotelx-backend \
             --network-mode awsvpc \
             --requires-compatibilities FARGATE \
             --cpu 1024 \
@@ -172,20 +172,20 @@ jobs:
                 {"name": "FRONTEND_URL", "value": "https://d32joxegsl0xnf.cloudfront.net"}
               ],
               "secrets": [
-                {"name": "MONGODB_URI", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/prod/documentdb-connection-uri-MkmZcC"},
-                {"name": "JWT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/jwt-secret-rtNWaV"},
-                {"name": "STRIPE_API_KEY", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/stripe-api-key-eZPSdO"},
-                {"name": "STRIPE_WEBHOOK_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/stripe-webhook-secret-S9rb8t"},
-                {"name": "EMAIL_USERNAME", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/email-username-8ALSYd"},
-                {"name": "EMAIL_PASSWORD", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/email-password-GFI4oH"},
-                {"name": "GOOGLE_CLIENT_ID", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/google-client-id-mjRbIf"},
-                {"name": "GOOGLE_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/google-client-secret-nlj3vY"},
-                {"name": "BACKEND_URL", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotel-reservation/backend-url-Zj35JO"}
+                {"name": "MONGODB_URI", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/prod/documentdb-connection-uri-MkmZcC"},
+                {"name": "JWT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/jwt-secret-rtNWaV"},
+                {"name": "STRIPE_API_KEY", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/stripe-api-key-eZPSdO"},
+                {"name": "STRIPE_WEBHOOK_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/stripe-webhook-secret-S9rb8t"},
+                {"name": "EMAIL_USERNAME", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/email-username-8ALSYd"},
+                {"name": "EMAIL_PASSWORD", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/email-password-GFI4oH"},
+                {"name": "GOOGLE_CLIENT_ID", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/google-client-id-mjRbIf"},
+                {"name": "GOOGLE_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/google-client-secret-nlj3vY"},
+                {"name": "BACKEND_URL", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/backend-url-Zj35JO"}
               ],
               "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
-                  "awslogs-group": "/ecs/hotel-reservation-backend",
+                  "awslogs-group": "/ecs/hotelx-backend",
                   "awslogs-region": "'$AWS_REGION'",
                   "awslogs-stream-prefix": "ecs",
                   "awslogs-create-group": "true"

@@ -64,7 +64,7 @@ Before running the application, gather these credentials:
 - [ ] Add redirect URIs:
   - `http://localhost:8080/login/oauth2/code/google`
   - `http://localhost:5173/oauth2/callback` (dev)
-  - `http://hotel-reservation-system-backend.s3-website-us-east-1.amazonaws.com/oauth2/callback` (AWS)
+  - `http://hotelx-system-backend.s3-website-us-east-1.amazonaws.com/oauth2/callback` (AWS)
 
 **Copy to .env:**
 ```env
@@ -81,7 +81,7 @@ GOOGLE_CLIENT_SECRET=GOCSPX-xxxxx
 - [ ] Configure Valid OAuth Redirect URIs:
   - `http://localhost:8080/login/oauth2/code/facebook`
   - `http://localhost:5173/oauth2/callback` (dev)
-  - `http://hotel-reservation-system-backend.s3-website-us-east-1.amazonaws.com/oauth2/callback` (AWS)
+  - `http://hotelx-system-backend.s3-website-us-east-1.amazonaws.com/oauth2/callback` (AWS)
 
 **Copy to .env:**
 ```env
@@ -554,7 +554,7 @@ Example room:
 After deploying to AWS, your application will be accessible at:
 
 ```
-Frontend:  http://hotel-reservation-system-backend.s3-website-us-east-1.amazonaws.com
+Frontend:  http://hotelx-system-backend.s3-website-us-east-1.amazonaws.com
 Backend:   http://[ECS-TASK-IP]:8080/api
 ```
 
@@ -577,16 +577,16 @@ STRIPE_PUBLIC_KEY=pk_test_51xxxxx
 Create these secrets in AWS Secrets Manager (us-east-1):
 
 ```
-hotel-reservation/jwt-secret
-hotel-reservation/stripe-api-key
-hotel-reservation/stripe-webhook-secret
-hotel-reservation/email-username
-hotel-reservation/email-password
-hotel-reservation/google-client-id
-hotel-reservation/google-client-secret
-hotel-reservation/facebook-client-id
-hotel-reservation/facebook-client-secret
-hotel-reservation/prod/documentdb-connection
+hotelx/jwt-secret
+hotelx/stripe-api-key
+hotelx/stripe-webhook-secret
+hotelx/email-username
+hotelx/email-password
+hotelx/google-client-id
+hotelx/google-client-secret
+hotelx/facebook-client-id
+hotelx/facebook-client-secret
+hotelx/prod/documentdb-connection
 ```
 
 **Detailed AWS setup instructions:** See [Docs/aws.md](aws.md)
@@ -619,7 +619,7 @@ hotel-reservation/prod/documentdb-connection
 4. MongoDB shell: `mongosh mongodb://admin:admin123@localhost:27017`
 
 ### AWS/Production
-1. Check CloudWatch Logs: `/ecs/hotel-reservation-backend`
+1. Check CloudWatch Logs: `/ecs/hotelx-backend`
 2. Verify ECS tasks: AWS Console → ECS → Clusters
 3. Check DocumentDB: AWS Console → Amazon DocumentDB
 4. Review GitHub Actions: Repository → Actions tab

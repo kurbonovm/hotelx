@@ -1,6 +1,6 @@
 spring:
   application:
-    name: hotel-reservation-system
+    name: hotelx-system
 
   # MongoDB Configuration
   data:

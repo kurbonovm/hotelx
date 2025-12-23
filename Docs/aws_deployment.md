@@ -19,20 +19,20 @@ Complete AWS infrastructure deployment guide and current production status.
 ### Production URLs
 - **Frontend (HTTPS)**: https://d32joxegsl0xnf.cloudfront.net
 - **Backend API (HTTPS)**: https://d1otlwpcr6195.cloudfront.net/api
-- **Backend ALB**: http://hotel-reservation-alb-1402628275.us-east-1.elb.amazonaws.com/api
+- **Backend ALB**: http://hotelx-alb-1402628275.us-east-1.elb.amazonaws.com/api
 
 ### Infrastructure Status
 
 | Component | Status | Details |
 |-----------|--------|---------|
 | **Region** | Active | us-east-1 (N. Virginia) |
-| **VPC** | Active | hotel-reservation-prod-vpc |
-| **ECS Cluster** | Active | hotel-reservation-prod-cluster |
-| **ECS Service** | Active | hotel-reservation-backend-service (1 task running) |
-| **DocumentDB** | Active | hotel-reservation-prod-docdb-cluster |
-| **ALB** | Active | hotel-reservation-alb |
+| **VPC** | Active | hotelx-prod-vpc |
+| **ECS Cluster** | Active | hotelx-prod-cluster |
+| **ECS Service** | Active | hotelx-backend-service (1 task running) |
+| **DocumentDB** | Active | hotelx-prod-docdb-cluster |
+| **ALB** | Active | hotelx-alb |
 | **CloudFront** | Active | 2 distributions (frontend + backend) |
-| **S3 Bucket** | Active | hotel-reservation-frontend-us-east-1 |
+| **S3 Bucket** | Active | hotelx-frontend-us-east-1 |
 | **ECR Repositories** | Active | Backend + Frontend |
 
 ---
@@ -86,25 +86,25 @@ Complete AWS infrastructure deployment guide and current production status.
   - Public Subnet 2: us-east-1b (10.0.2.0/24)
   - Private Subnet 1: us-east-1a (10.0.11.0/24)
   - Private Subnet 2: us-east-1b (10.0.12.0/24)
-- Internet Gateway: hotel-reservation-prod-igw
+- Internet Gateway: hotelx-prod-igw
 - NAT Gateways: 2 (one per AZ for HA)
 
 **Security Groups:**
-- `hotel-reservation-prod-ecs-sg`: ECS task security group
+- `hotelx-prod-ecs-sg`: ECS task security group
   - Inbound: Port 8080 from ALB security group
   - Outbound: All traffic
-- `hotel-reservation-prod-docdb-sg`: DocumentDB security group
+- `hotelx-prod-docdb-sg`: DocumentDB security group
   - Inbound: Port 27017 from ECS security group
   - Outbound: All traffic
-- `hotel-reservation-prod-alb-sg`: Application Load Balancer
+- `hotelx-prod-alb-sg`: Application Load Balancer
   - Inbound: Port 80 from 0.0.0.0/0
   - Outbound: All traffic
 
 ### 2. Database (DocumentDB)
 
 **Cluster Configuration:**
-- Cluster ID: `hotel-reservation-prod-docdb-cluster`
-- Endpoint: `hotel-reservation-prod-docdb-cluster.cluster-cy3ey826y545.us-east-1.docdb.amazonaws.com`
+- Cluster ID: `hotelx-prod-docdb-cluster`
+- Endpoint: `hotelx-prod-docdb-cluster.cluster-cy3ey826y545.us-east-1.docdb.amazonaws.com`
 - Engine: Amazon DocumentDB 5.0
 - Instance Class: db.t3.medium
 - Instances: 1 (can scale to 2-3 for HA)
@@ -115,24 +115,24 @@ Complete AWS infrastructure deployment guide and current production status.
 **Connection:**
 - Authentication: Username/password (stored in Secrets Manager)
 - TLS: Required (with certificate validation disabled for compatibility)
-- Connection String: Stored in `hotel-reservation/prod/documentdb-connection-uri`
+- Connection String: Stored in `hotelx/prod/documentdb-connection-uri`
 
 ### 3. Container Registry (ECR)
 
 **Repositories:**
-- Backend: `837271986183.dkr.ecr.us-east-1.amazonaws.com/hotel-reservation-backend`
-- Frontend: `837271986183.dkr.ecr.us-east-1.amazonaws.com/hotel-reservation-frontend`
+- Backend: `837271986183.dkr.ecr.us-east-1.amazonaws.com/hotelx-backend`
+- Frontend: `837271986183.dkr.ecr.us-east-1.amazonaws.com/hotelx-frontend`
 - Scan on push: Enabled
 - Encryption: AES-256
 
 ### 4. Container Service (ECS Fargate)
 
 **Cluster:**
-- Name: `hotel-reservation-prod-cluster`
+- Name: `hotelx-prod-cluster`
 - Type: AWS Fargate (serverless)
 - Container Insights: Enabled
 
-**Task Definition: hotel-reservation-backend**
+**Task Definition: hotelx-backend**
 - Revision: 31 (current)
 - CPU: 1024 (1 vCPU)
 - Memory: 2048 MB (2 GB)
@@ -165,7 +165,7 @@ Complete AWS infrastructure deployment guide and current production status.
 - BACKEND_URL
 
 **Service:**
-- Name: `hotel-reservation-backend-service`
+- Name: `hotelx-backend-service`
 - Desired Count: 1
 - Running Count: 1
 - Subnets: Private subnets 1 & 2
@@ -173,15 +173,15 @@ Complete AWS infrastructure deployment guide and current production status.
 - Load Balancer: Integrated with ALB
 
 **Logging:**
-- CloudWatch Log Group: `/ecs/hotel-reservation-backend`
+- CloudWatch Log Group: `/ecs/hotelx-backend`
 - Stream Prefix: ecs
 - Region: us-east-1
 
 ### 5. Load Balancer
 
 **Application Load Balancer:**
-- Name: `hotel-reservation-alb`
-- DNS: `hotel-reservation-alb-1402628275.us-east-1.elb.amazonaws.com`
+- Name: `hotelx-alb`
+- DNS: `hotelx-alb-1402628275.us-east-1.elb.amazonaws.com`
 - Scheme: Internet-facing
 - IP Address Type: IPv4
 - Subnets: Public subnets in us-east-1a and us-east-1b
@@ -208,7 +208,7 @@ Complete AWS infrastructure deployment guide and current production status.
 **Frontend Distribution:**
 - ID: E3AEFUC8QLUDD9
 - Domain: `d32joxegsl0xnf.cloudfront.net`
-- Origin: S3 bucket (hotel-reservation-frontend-us-east-1)
+- Origin: S3 bucket (hotelx-frontend-us-east-1)
 - Status: Deployed
 - SSL Certificate: Default CloudFront certificate
 - Comment: CloudFront distribution for hotel reservation frontend
@@ -225,9 +225,9 @@ Complete AWS infrastructure deployment guide and current production status.
 ### 7. S3 Static Website Hosting
 
 **Bucket:**
-- Name: `hotel-reservation-frontend-us-east-1`
+- Name: `hotelx-frontend-us-east-1`
 - Region: us-east-1
-- Website Endpoint: `http://hotel-reservation-frontend-us-east-1.s3-website-us-east-1.amazonaws.com`
+- Website Endpoint: `http://hotelx-frontend-us-east-1.s3-website-us-east-1.amazonaws.com`
 - Public Access: Enabled (via bucket policy)
 - Hosting: Static website (index.html)
 
@@ -241,7 +241,7 @@ Complete AWS infrastructure deployment guide and current production status.
       "Effect": "Allow",
       "Principal": "*",
       "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::hotel-reservation-frontend-us-east-1/*"
+      "Resource": "arn:aws:s3:::hotelx-frontend-us-east-1/*"
     }
   ]
 }
@@ -252,17 +252,17 @@ Complete AWS infrastructure deployment guide and current production status.
 **Stored Secrets:**
 | Secret Name | Purpose | Last Updated |
 |-------------|---------|--------------|
-| `hotel-reservation/jwt-secret` | JWT token signing | Dec 12, 2025 |
-| `hotel-reservation/stripe-api-key` | Stripe payments | Dec 13, 2025 |
-| `hotel-reservation/stripe-webhook-secret` | Stripe webhooks | Dec 13, 2025 |
-| `hotel-reservation/email-username` | SMTP email | Dec 12, 2025 |
-| `hotel-reservation/email-password` | SMTP password | Dec 12, 2025 |
-| `hotel-reservation/google-client-id` | OAuth2 Google | Dec 13, 2025 |
-| `hotel-reservation/google-client-secret` | OAuth2 Google | Dec 13, 2025 |
-| `hotel-reservation/backend-url` | Backend URL | Dec 13, 2025 |
-| `hotel-reservation/frontend-url` | Frontend URL | Dec 13, 2025 |
-| `hotel-reservation/prod/documentdb-connection-uri` | MongoDB connection | Dec 12, 2025 |
-| `hotel-reservation/prod/db-master-password` | Database password | Dec 12, 2025 |
+| `hotelx/jwt-secret` | JWT token signing | Dec 12, 2025 |
+| `hotelx/stripe-api-key` | Stripe payments | Dec 13, 2025 |
+| `hotelx/stripe-webhook-secret` | Stripe webhooks | Dec 13, 2025 |
+| `hotelx/email-username` | SMTP email | Dec 12, 2025 |
+| `hotelx/email-password` | SMTP password | Dec 12, 2025 |
+| `hotelx/google-client-id` | OAuth2 Google | Dec 13, 2025 |
+| `hotelx/google-client-secret` | OAuth2 Google | Dec 13, 2025 |
+| `hotelx/backend-url` | Backend URL | Dec 13, 2025 |
+| `hotelx/frontend-url` | Frontend URL | Dec 13, 2025 |
+| `hotelx/prod/documentdb-connection-uri` | MongoDB connection | Dec 12, 2025 |
+| `hotelx/prod/db-master-password` | Database password | Dec 12, 2025 |
 
 ---
 
@@ -379,16 +379,16 @@ gh workflow run deploy-frontend.yml
 ### Logs
 
 **Application Logs:**
-- CloudWatch Log Group: `/ecs/hotel-reservation-backend`
+- CloudWatch Log Group: `/ecs/hotelx-backend`
 - Retention: 7 days (configurable)
 - Access: AWS Console or AWS CLI
 
 ```bash
 # Tail logs
-aws logs tail /ecs/hotel-reservation-backend --follow --region us-east-1
+aws logs tail /ecs/hotelx-backend --follow --region us-east-1
 
 # Get logs from specific time
-aws logs tail /ecs/hotel-reservation-backend --since 1h --region us-east-1
+aws logs tail /ecs/hotelx-backend --since 1h --region us-east-1
 ```
 
 ### Health Checks
@@ -399,7 +399,7 @@ aws logs tail /ecs/hotel-reservation-backend --since 1h --region us-east-1
 curl https://d1otlwpcr6195.cloudfront.net/actuator/health
 
 # Via ALB
-curl http://hotel-reservation-alb-1402628275.us-east-1.elb.amazonaws.com/actuator/health
+curl http://hotelx-alb-1402628275.us-east-1.elb.amazonaws.com/actuator/health
 
 # Expected response:
 # {"status":"UP"}
@@ -419,8 +419,8 @@ curl http://hotel-reservation-alb-1402628275.us-east-1.elb.amazonaws.com/actuato
 **Manual Snapshot:**
 ```bash
 aws docdb create-db-cluster-snapshot \
-  --db-cluster-snapshot-identifier hotel-reservation-manual-backup-$(date +%Y%m%d) \
-  --db-cluster-identifier hotel-reservation-prod-docdb-cluster \
+  --db-cluster-snapshot-identifier hotelx-manual-backup-$(date +%Y%m%d) \
+  --db-cluster-identifier hotelx-prod-docdb-cluster \
   --region us-east-1
 ```
 
@@ -460,7 +460,7 @@ aws docdb create-db-cluster-snapshot \
    ```bash
    # JWT Secret
    aws secretsmanager create-secret \
-     --name hotel-reservation/jwt-secret \
+     --name hotelx/jwt-secret \
      --secret-string "$(openssl rand -base64 64)" \
      --region us-east-1
 
@@ -470,11 +470,11 @@ aws docdb create-db-cluster-snapshot \
 4. **Create ECR Repositories:**
    ```bash
    aws ecr create-repository \
-     --repository-name hotel-reservation-backend \
+     --repository-name hotelx-backend \
      --region us-east-1
 
    aws ecr create-repository \
-     --repository-name hotel-reservation-frontend \
+     --repository-name hotelx-frontend \
      --region us-east-1
    ```
 
@@ -487,10 +487,10 @@ aws docdb create-db-cluster-snapshot \
 
    # Build and push backend
    cd backend
-   docker build --platform linux/amd64 -t hotel-reservation-backend .
-   docker tag hotel-reservation-backend:latest \
-     837271986183.dkr.ecr.us-east-1.amazonaws.com/hotel-reservation-backend:latest
-   docker push 837271986183.dkr.ecr.us-east-1.amazonaws.com/hotel-reservation-backend:latest
+   docker build --platform linux/amd64 -t hotelx-backend .
+   docker tag hotelx-backend:latest \
+     837271986183.dkr.ecr.us-east-1.amazonaws.com/hotelx-backend:latest
+   docker push 837271986183.dkr.ecr.us-east-1.amazonaws.com/hotelx-backend:latest
    ```
 
 6. **Create ECS Cluster and Service:**
@@ -546,12 +546,12 @@ The deployment is managed primarily through GitHub Actions. For new deployments,
 
 ```bash
 # View task logs
-aws logs tail /ecs/hotel-reservation-backend --follow --region us-east-1
+aws logs tail /ecs/hotelx-backend --follow --region us-east-1
 
 # Check task stopped reason
 aws ecs describe-tasks \
-  --cluster hotel-reservation-prod-cluster \
-  --tasks $(aws ecs list-tasks --cluster hotel-reservation-prod-cluster --service-name hotel-reservation-backend-service --query 'taskArns[0]' --output text) \
+  --cluster hotelx-prod-cluster \
+  --tasks $(aws ecs list-tasks --cluster hotelx-prod-cluster --service-name hotelx-backend-service --query 'taskArns[0]' --output text) \
   --query 'tasks[0].stoppedReason' \
   --region us-east-1
 ```
@@ -599,7 +599,7 @@ aws elbv2 describe-target-health \
 
 ```bash
 # List S3 files
-aws s3 ls s3://hotel-reservation-frontend-us-east-1/
+aws s3 ls s3://hotelx-frontend-us-east-1/
 
 # Create CloudFront invalidation
 aws cloudfront create-invalidation \
@@ -683,7 +683,7 @@ gh run view [RUN_ID] --log
 # Register scalable target
 aws application-autoscaling register-scalable-target \
   --service-namespace ecs \
-  --resource-id service/hotel-reservation-prod-cluster/hotel-reservation-backend-service \
+  --resource-id service/hotelx-prod-cluster/hotelx-backend-service \
   --scalable-dimension ecs:service:DesiredCount \
   --min-capacity 1 \
   --max-capacity 4 \
@@ -692,7 +692,7 @@ aws application-autoscaling register-scalable-target \
 # Create scaling policy
 aws application-autoscaling put-scaling-policy \
   --service-namespace ecs \
-  --resource-id service/hotel-reservation-prod-cluster/hotel-reservation-backend-service \
+  --resource-id service/hotelx-prod-cluster/hotelx-backend-service \
   --scalable-dimension ecs:service:DesiredCount \
   --policy-name cpu-scaling-policy \
   --policy-type TargetTrackingScaling \
@@ -733,8 +733,8 @@ aws application-autoscaling put-scaling-policy \
 ```bash
 # Restore from snapshot
 aws docdb restore-db-cluster-from-snapshot \
-  --db-cluster-identifier hotel-reservation-recovery \
-  --snapshot-identifier hotel-reservation-manual-backup-20251213 \
+  --db-cluster-identifier hotelx-recovery \
+  --snapshot-identifier hotelx-manual-backup-20251213 \
   --region us-east-1
 ```
 
@@ -742,9 +742,9 @@ aws docdb restore-db-cluster-from-snapshot \
 ```bash
 # Update service to previous task definition
 aws ecs update-service \
-  --cluster hotel-reservation-prod-cluster \
-  --service hotel-reservation-backend-service \
-  --task-definition hotel-reservation-backend:30 \
+  --cluster hotelx-prod-cluster \
+  --service hotelx-backend-service \
+  --task-definition hotelx-backend:30 \
   --region us-east-1
 ```
 
@@ -791,28 +791,28 @@ aws ecs update-service \
 ## Appendix: Resource ARNs
 
 ### ECS Resources
-- Cluster: `arn:aws:ecs:us-east-1:837271986183:cluster/hotel-reservation-prod-cluster`
-- Service: `arn:aws:ecs:us-east-1:837271986183:service/hotel-reservation-prod-cluster/hotel-reservation-backend-service`
-- Task Definition: `arn:aws:ecs:us-east-1:837271986183:task-definition/hotel-reservation-backend:31`
+- Cluster: `arn:aws:ecs:us-east-1:837271986183:cluster/hotelx-prod-cluster`
+- Service: `arn:aws:ecs:us-east-1:837271986183:service/hotelx-prod-cluster/hotelx-backend-service`
+- Task Definition: `arn:aws:ecs:us-east-1:837271986183:task-definition/hotelx-backend:31`
 
 ### Load Balancer
-- ALB: `arn:aws:elasticloadbalancing:us-east-1:837271986183:loadbalancer/app/hotel-reservation-alb/xxx`
+- ALB: `arn:aws:elasticloadbalancing:us-east-1:837271986183:loadbalancer/app/hotelx-alb/xxx`
 - Target Group: `arn:aws:elasticloadbalancing:us-east-1:837271986183:targetgroup/hotel-backend-tg/55451774ae9d747f`
 
 ### DocumentDB
-- Cluster: `arn:aws:rds:us-east-1:837271986183:cluster:hotel-reservation-prod-docdb-cluster`
-- Instance: `arn:aws:rds:us-east-1:837271986183:db:hotel-reservation-prod-docdb-instance`
+- Cluster: `arn:aws:rds:us-east-1:837271986183:cluster:hotelx-prod-docdb-cluster`
+- Instance: `arn:aws:rds:us-east-1:837271986183:db:hotelx-prod-docdb-instance`
 
 ### CloudFront
 - Frontend: `arn:aws:cloudfront::837271986183:distribution/E3AEFUC8QLUDD9`
 - Backend: `arn:aws:cloudfront::837271986183:distribution/E1IN2SZ3C0Y2LC`
 
 ### S3
-- Frontend Bucket: `arn:aws:s3:::hotel-reservation-frontend-us-east-1`
+- Frontend Bucket: `arn:aws:s3:::hotelx-frontend-us-east-1`
 
 ### ECR
-- Backend Repo: `arn:aws:ecr:us-east-1:837271986183:repository/hotel-reservation-backend`
-- Frontend Repo: `arn:aws:ecr:us-east-1:837271986183:repository/hotel-reservation-frontend`
+- Backend Repo: `arn:aws:ecr:us-east-1:837271986183:repository/hotelx-backend`
+- Frontend Repo: `arn:aws:ecr:us-east-1:837271986183:repository/hotelx-frontend`
 
 ---
 
