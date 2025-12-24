@@ -1,0 +1,49 @@
+# HotelX AWS Infrastructure Configuration
+# Generated on Wed Dec 24 08:40:57 CST 2025
+
+AWS_REGION=us-east-1
+AWS_ACCOUNT_ID=837271986183
+
+# VPC
+VPC_ID=vpc-0c47f96ae16394e2b
+PUBLIC_SUBNET_1_ID=subnet-0197489b251424832
+PUBLIC_SUBNET_2_ID=subnet-0b5cc4fe2f67a2e83
+PRIVATE_SUBNET_1_ID=subnet-0fe428d5c6c297f1d
+PRIVATE_SUBNET_2_ID=subnet-0e8111d5b57331709
+
+# Security Groups
+ALB_SG_ID=sg-0c752304960cc05da
+ECS_SG_ID=sg-0e94477fac578b8d0
+DOCDB_SG_ID=sg-0de24e5ec4c96f60f
+
+# Database
+DOCDB_ENDPOINT=hotelx-prod-docdb-cluster.cluster-cy3ey826y545.us-east-1.docdb.amazonaws.com
+
+# ECR
+BACKEND_REPO_URI=837271986183.dkr.ecr.us-east-1.amazonaws.com/hotelx-backend
+FRONTEND_REPO_URI=837271986183.dkr.ecr.us-east-1.amazonaws.com/hotelx-frontend
+
+# ECS
+ECS_CLUSTER=hotelx-prod-cluster
+
+# Load Balancer
+ALB_DNS=hotelx-alb-1655290467.us-east-1.elb.amazonaws.com
+TARGET_GROUP_ARN=arn:aws:elasticloadbalancing:us-east-1:837271986183:targetgroup/hotelx-backend-tg/a9408eca4b6cf30d
+
+# S3
+S3_BUCKET=hotelx-frontend-us-east-1
+S3_WEBSITE_URL=http://hotelx-frontend-us-east-1.s3-website-us-east-1.amazonaws.com
+
+# CloudFront
+FRONTEND_CF_ID=E1FO8D2MFHJXF2
+FRONTEND_CF_DOMAIN=d7vv9cemk0w3z.cloudfront.net
+BACKEND_CF_ID=E1I00M058XE70W
+BACKEND_CF_DOMAIN=d1nvp6mgyflg8l.cloudfront.net
+
+# GitHub Secrets to Configure:
+# AWS_ACCESS_KEY_ID=<your-aws-access-key>
+# AWS_SECRET_ACCESS_KEY=<your-aws-secret-key>
+# AWS_ACCOUNT_ID=837271986183
+# BACKEND_API_URL=https://d1nvp6mgyflg8l.cloudfront.net
+# CLOUDFRONT_DISTRIBUTION_ID=E1FO8D2MFHJXF2
+# STRIPE_PUBLIC_KEY=<your-stripe-public-key>
