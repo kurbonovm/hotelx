@@ -55,7 +55,7 @@ services:
           "--quiet",
           "--tries=1",
           "--spider",
-          "http://localhost:8080/actuator/health",
+          "https://d1nvp6mgyflg8l.cloudfront.net/actuator/health",
         ]
       interval: 30s
       timeout: 10s
