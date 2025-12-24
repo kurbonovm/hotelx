@@ -124,11 +124,13 @@ jobs:
               "portMappings": [{"containerPort": 8080, "protocol": "tcp"}],
               "environment": [
                 {"name": "SPRING_PROFILES_ACTIVE", "value": "prod"},
-                {"name": "FRONTEND_URL", "value": "https://d32joxegsl0xnf.cloudfront.net"}
+                {"name": "FRONTEND_URL", "value": "https://d32joxegsl0xnf.cloudfront.net"},
+                {"name": "DATABASE_NAME", "value": "hotelx"}
               ],
               "secrets": [
-                {"name": "MONGODB_URI", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/prod/documentdb-connection-uri-ROC0dD"},
+                {"name": "DATABASE_URI", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/prod/documentdb-connection-uri-ROC0dD"},
                 {"name": "JWT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/jwt-secret-MRFiPc"},
+                {"name": "JWT_EXPIRATION", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/jwt-expiration-r52S8N"},
                 {"name": "STRIPE_API_KEY", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/stripe-api-key-mXzdl3"},
                 {"name": "STRIPE_WEBHOOK_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/stripe-webhook-secret-pBzA9O"},
                 {"name": "EMAIL_USERNAME", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/email-username-o2W9aZ"},
@@ -222,11 +224,13 @@ jobs:
               "portMappings": [{"containerPort": 8080, "protocol": "tcp"}],
               "environment": [
                 {"name": "SPRING_PROFILES_ACTIVE", "value": "prod"},
-                {"name": "FRONTEND_URL", "value": "https://d32joxegsl0xnf.cloudfront.net"}
+                {"name": "FRONTEND_URL", "value": "https://d32joxegsl0xnf.cloudfront.net"},
+                {"name": "DATABASE_NAME", "value": "hotelx"}
               ],
               "secrets": [
-                {"name": "MONGODB_URI", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/prod/documentdb-connection-uri-ROC0dD"},
+                {"name": "DATABASE_URI", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/prod/documentdb-connection-uri-ROC0dD"},
                 {"name": "JWT_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/jwt-secret-MRFiPc"},
+                {"name": "JWT_EXPIRATION", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/jwt-expiration-r52S8N"},
                 {"name": "STRIPE_API_KEY", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/stripe-api-key-mXzdl3"},
                 {"name": "STRIPE_WEBHOOK_SECRET", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/stripe-webhook-secret-pBzA9O"},
                 {"name": "EMAIL_USERNAME", "valueFrom": "arn:aws:secretsmanager:'$AWS_REGION':'${{ secrets.AWS_ACCOUNT_ID }}':secret:hotelx/email-username-o2W9aZ"},
