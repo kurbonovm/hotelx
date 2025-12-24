@@ -29,7 +29,7 @@ services:
     ports:
       - "8080:8080" 
     environment:
-      SPRING_DATA_MONGODB_URI: ${MONGODB_URI}
+      SPRING_DATA_MONGODB_URI: ${DATABASE_URI}
       SPRING_DATA_MONGODB_DATABASE: hotel_reservation
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION}
@@ -41,7 +41,7 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       FACEBOOK_CLIENT_ID: ${FACEBOOK_CLIENT_ID}
       FACEBOOK_CLIENT_SECRET: ${FACEBOOK_CLIENT_SECRET}
-      APP_CORS_ALLOWED_ORIGINS: http://localhost:5173,http://localhost:3000,http://localhost,http://localhost:80,http://frontend:80,https://d7vv9cemk0w3z.cloudfront.net
+      APP_CORS_ALLOWED_ORIGINS: ${FRONTEND_URL}
     depends_on:
       mongodb:
         condition: service_healthy
