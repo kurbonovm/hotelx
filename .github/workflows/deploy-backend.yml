@@ -35,6 +35,10 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Inject Account ID into Task Definition
+        run: |
+          sed -i "s/\${AWS_ACCOUNT_ID}/${{ secrets.AWS_ACCOUNT_ID }}/g" aws/task-definition.json
+
       - name: Build and Push Image
         id: build-image
         run: |
