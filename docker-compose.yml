@@ -7,7 +7,7 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGODB_URI: ${MONGODB_URI}
+      MONGODB_URI: ${DATABASE_URI}
     volumes:
       - mongodb_data:/data/db
       - mongodb_config:/data/configdb
