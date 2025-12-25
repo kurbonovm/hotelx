@@ -24,6 +24,9 @@
         {"name": "STRIPE_WEBHOOK_SECRET", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/stripe-webhook-secret-pBzA9O"},
         {"name": "GOOGLE_CLIENT_ID", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/google-client-id-YA7gjn"},
         {"name": "GOOGLE_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/google-client-secret-y57Z1N"},
+        {"name": "OKTA_CLIENT_ID", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/okta-client-id-XXXXXX"},
+        {"name": "OKTA_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/okta-client-secret-XXXXXX"},
+        {"name": "OKTA_ISSUER_URI", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/okta-issuer-uri-XXXXXX"},
         {"name": "BACKEND_URL", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/backend-url-Qz2w62"}
       ],
       "logConfiguration": {

@@ -3,6 +3,7 @@ package com.hotel.reservation.config;
 import com.hotel.reservation.security.CustomUserDetailsService;
 import com.hotel.reservation.security.JwtAuthenticationFilter;
 import com.hotel.reservation.security.oauth2.CustomOAuth2UserService;
+import com.hotel.reservation.security.oauth2.CustomOidcUserService;
 import com.hotel.reservation.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import com.hotel.reservation.security.oauth2.OAuth2AuthenticationFailureHandler;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,7 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOidcUserService customOidcUserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
@@ -77,7 +79,10 @@ public class SecurityConfig {
                 .redirectionEndpoint(redirection -> redirection
                     .baseUri("/login/oauth2/code/*")
                 )
-                .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                .userInfoEndpoint(userInfo -> userInfo
+                    .userService(customOAuth2UserService)
+                    .oidcUserService(customOidcUserService)
+                )
                 .successHandler(oAuth2AuthenticationSuccessHandler)
                 .failureHandler(oAuth2AuthenticationFailureHandler)
             )

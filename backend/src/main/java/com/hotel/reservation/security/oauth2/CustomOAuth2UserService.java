@@ -17,14 +17,43 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) {
+        System.out.println("=== CustomOAuth2UserService.loadUser called ===");
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        String provider = userRequest.getClientRegistration().getRegistrationId(); // "google"
-        String providerId = oAuth2User.getAttribute("sub");
-        String email = oAuth2User.getAttribute("email");
-        String firstName = oAuth2User.getAttribute("given_name");
-        String lastName = oAuth2User.getAttribute("family_name");
-        String avatar = oAuth2User.getAttribute("picture");
+        String provider = userRequest.getClientRegistration().getRegistrationId(); // "google" or "okta"
+        System.out.println("Provider: " + provider);
+
+        // Extract user attributes based on provider
+        String providerId;
+        String email;
+        String firstName;
+        String lastName;
+        String avatar;
+
+        if ("okta".equals(provider)) {
+            // Okta attribute mapping
+            providerId = oAuth2User.getAttribute("sub");
+            email = oAuth2User.getAttribute("email");
+            String name = oAuth2User.getAttribute("name");
+            // Okta provides "name" as full name, split it
+            if (name != null && name.contains(" ")) {
+                String[] nameParts = name.split(" ", 2);
+                firstName = nameParts[0];
+                lastName = nameParts.length > 1 ? nameParts[1] : "";
+            } else {
+                firstName = name != null ? name : "";
+                lastName = "";
+            }
+            // Okta may provide preferred_username or picture
+            avatar = oAuth2User.getAttribute("picture");
+        } else {
+            // Google attribute mapping (default)
+            providerId = oAuth2User.getAttribute("sub");
+            email = oAuth2User.getAttribute("email");
+            firstName = oAuth2User.getAttribute("given_name");
+            lastName = oAuth2User.getAttribute("family_name");
+            avatar = oAuth2User.getAttribute("picture");
+        }
 
         User user = userRepository.findByProviderAndProviderId(provider, providerId)
                 .orElseGet(() -> {
@@ -49,7 +78,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         user.setProviderId(providerId);
         user.setEnabled(true);
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        System.out.println("User saved: ID=" + savedUser.getId() + ", provider=" + savedUser.getProvider() + ", providerId=" + savedUser.getProviderId());
 
         // Return a principal for Spring Security
         return new org.springframework.security.oauth2.core.user.DefaultOAuth2User(

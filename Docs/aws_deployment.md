@@ -160,6 +160,9 @@ Complete AWS infrastructure deployment guide and current production status.
 - STRIPE_WEBHOOK_SECRET
 - GOOGLE_CLIENT_ID
 - GOOGLE_CLIENT_SECRET
+- OKTA_CLIENT_ID
+- OKTA_CLIENT_SECRET
+- OKTA_ISSUER_URI
 - BACKEND_URL
 
 **Service:**
@@ -253,10 +256,11 @@ Complete AWS infrastructure deployment guide and current production status.
 | `hotelx/jwt-secret` | JWT token signing | Dec 12, 2025 |
 | `hotelx/stripe-api-key` | Stripe payments | Dec 13, 2025 |
 | `hotelx/stripe-webhook-secret` | Stripe webhooks | Dec 13, 2025 |
-| `hotelx/email-username` | SMTP email | Dec 12, 2025 |
-| `hotelx/email-password` | SMTP password | Dec 12, 2025 |
 | `hotelx/google-client-id` | OAuth2 Google | Dec 13, 2025 |
 | `hotelx/google-client-secret` | OAuth2 Google | Dec 13, 2025 |
+| `hotelx/okta-client-id` | OAuth2 Okta | Dec 25, 2025 |
+| `hotelx/okta-client-secret` | OAuth2 Okta | Dec 25, 2025 |
+| `hotelx/okta-issuer-uri` | OAuth2 Okta | Dec 25, 2025 |
 | `hotelx/backend-url` | Backend URL | Dec 13, 2025 |
 | `hotelx/frontend-url` | Frontend URL | Dec 13, 2025 |
 | `hotelx/prod/documentdb-connection-uri` | MongoDB connection | Dec 12, 2025 |
@@ -323,7 +327,7 @@ gh workflow run deploy-frontend.yml
 | **ECR** | ~1 GB images | $1.00 |
 | **S3** | Static hosting (~500 MB) | $0.50 |
 | **CloudFront** | 2 distributions (~10GB data) | $2.00 |
-| **Secrets Manager** | 11 secrets | $4.40 |
+| **Secrets Manager** | 12 secrets | $4.80 |
 | **Data Transfer** | ~20 GB/month | $1.80 |
 | **CloudWatch Logs** | ~2 GB/month | $1.00 |
 | **Route 53** | (if custom domain added) | $0.50 |
@@ -642,10 +646,33 @@ gh run view [RUN_ID] --log
 ### OAuth2 Not Working
 
 **Check:**
-1. Google credentials in Secrets Manager
+
+**For Google OAuth2:**
+1. Google credentials in Secrets Manager:
+   - `hotelx/google-client-id`
+   - `hotelx/google-client-secret`
 2. Authorized redirect URIs in Google Console:
-   - https://d32joxegsl0xnf.cloudfront.net/login/oauth2/code/google
-3. Backend URL configured correctly in secrets
+   - `https://d1otlwpcr6195.cloudfront.net/login/oauth2/code/google`
+   - `http://localhost:8080/login/oauth2/code/google` (for local dev)
+3. Authorized JavaScript origins:
+   - `https://d32joxegsl0xnf.cloudfront.net` (frontend)
+   - `http://localhost:5173` (for local dev)
+4. Backend URL configured correctly in secrets
+
+**For Okta OAuth2:**
+1. Okta credentials in Secrets Manager:
+   - `hotelx/okta-client-id`
+   - `hotelx/okta-client-secret`
+   - `hotelx/okta-issuer-uri`
+2. Sign-in redirect URIs in Okta Console:
+   - `https://d1otlwpcr6195.cloudfront.net/login/oauth2/code/okta`
+   - `http://localhost:8080/login/oauth2/code/okta` (for local dev)
+3. Sign-out redirect URIs:
+   - `https://d32joxegsl0xnf.cloudfront.net`
+   - `http://localhost:5173` (for local dev)
+4. Trusted Origins configured for CORS:
+   - `https://d32joxegsl0xnf.cloudfront.net`
+   - `http://localhost:5173` (for local dev)
 
 ---
 
@@ -780,9 +807,10 @@ aws ecs update-service \
 - AWS DocumentDB: https://docs.aws.amazon.com/documentdb/
 
 **Maintenance:**
-- Last Updated: December 13, 2025
-- Document Version: 2.0
-- Infrastructure Version: Production v1.1
+- Last Updated: December 25, 2025
+- Document Version: 2.1
+- Infrastructure Version: Production v1.2
+- Changes: Added Okta OAuth2 support, removed email secrets
 
 ---
 

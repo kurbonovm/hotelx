@@ -441,10 +441,11 @@ delete_secrets() {
         "${PROJECT_NAME}/jwt-secret"
         "${PROJECT_NAME}/stripe-api-key"
         "${PROJECT_NAME}/stripe-webhook-secret"
-        "${PROJECT_NAME}/email-username"
-        "${PROJECT_NAME}/email-password"
         "${PROJECT_NAME}/google-client-id"
         "${PROJECT_NAME}/google-client-secret"
+        "${PROJECT_NAME}/okta-client-id"
+        "${PROJECT_NAME}/okta-client-secret"
+        "${PROJECT_NAME}/okta-issuer-uri"
         "${PROJECT_NAME}/backend-url"
         "${PROJECT_NAME}/frontend-url"
     )

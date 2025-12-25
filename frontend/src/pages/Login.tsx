@@ -12,7 +12,7 @@ import {
   Paper,
   Divider,
 } from '@mui/material';
-import { Google as GoogleIcon } from '@mui/icons-material';
+import { Google as GoogleIcon, AccountCircle as OktaIcon } from '@mui/icons-material';
 import { useLoginMutation } from '../features/auth/authApi';
 import { setCredentials } from '../features/auth/authSlice';
 import { LoginRequest } from '../types';
@@ -100,7 +100,7 @@ const Login: React.FC = () => {
           }}
         >
           <Typography component="h1" variant="h4" gutterBottom>
-            Sign In
+            Sign In or Sign Up
           </Typography>
 
           {error && (
@@ -151,8 +151,18 @@ const Login: React.FC = () => {
               variant="outlined"
               startIcon={<GoogleIcon />}
               onClick={() => handleOAuth2Login('google')}
+              sx={{ mb: 1 }}
             >
-              Sign in with Google
+              Continue with Google
+            </Button>
+
+            <Button
+              fullWidth
+              variant="outlined"
+              startIcon={<OktaIcon />}
+              onClick={() => handleOAuth2Login('okta')}
+            >
+              Continue with Okta
             </Button>
 
             <Box sx={{ mt: 2, textAlign: 'center' }}>

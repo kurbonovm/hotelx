@@ -22,6 +22,17 @@ spring:
               - profile
               - email
             redirect-uri: ${BACKEND_URL}/login/oauth2/code/google
+          okta:
+            client-id: ${OKTA_CLIENT_ID}
+            client-secret: ${OKTA_CLIENT_SECRET}
+            scope:
+              - openid
+              - profile
+              - email
+            redirect-uri: ${BACKEND_URL}/login/oauth2/code/okta
+        provider:
+          okta:
+            issuer-uri: ${OKTA_ISSUER_URI}
 
   # File Upload Configuration
   servlet:

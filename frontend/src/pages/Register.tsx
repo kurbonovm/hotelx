@@ -10,9 +10,7 @@ import {
   Link,
   Alert,
   Paper,
-  Divider,
 } from '@mui/material';
-import { Google as GoogleIcon } from '@mui/icons-material';
 import { useRegisterMutation } from '../features/auth/authApi';
 import { setCredentials } from '../features/auth/authSlice';
 import { RegisterRequest } from '../types';
@@ -58,11 +56,6 @@ const Register: React.FC = () => {
     } catch (err: any) {
       setError(err.data?.message || 'Failed to register. Please try again.');
     }
-  };
-
-  const handleOAuth2Login = (provider: string) => {
-    // Use Spring Security's default endpoint for OAuth2 login
-    window.location.href = `${import.meta.env.VITE_API_URL.replace(/\/api$/, '')}/oauth2/authorization/${provider}`;
   };
 
   return (
@@ -153,17 +146,6 @@ const Register: React.FC = () => {
               disabled={isLoading}
             >
               {isLoading ? 'Creating Account...' : 'Sign Up'}
-            </Button>
-
-            <Divider sx={{ my: 2 }}>OR</Divider>
-
-            <Button
-              fullWidth
-              variant="outlined"
-              startIcon={<GoogleIcon />}
-              onClick={() => handleOAuth2Login('google')}
-            >
-              Sign up with Google
             </Button>
 
             <Box sx={{ mt: 2, textAlign: 'center' }}>
