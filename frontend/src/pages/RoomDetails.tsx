@@ -4,7 +4,6 @@ import {
   Container,
   Box,
   Typography,
-  Grid,
   Card,
   CardMedia,
   Button,
@@ -15,8 +14,9 @@ import {
   ListItemText,
   TextField,
   Alert,
+  useTheme,
 } from '@mui/material';
-import { CheckCircle, People, AspectRatio, Stairs } from '@mui/icons-material';
+import { CheckCircle, People, AspectRatio, Stairs, ArrowBack } from '@mui/icons-material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -32,6 +32,8 @@ const RoomDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  const theme = useTheme();
+  const isDarkMode = theme.palette.mode === 'dark';
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
   const { data: room, isLoading, error } = useGetRoomByIdQuery(id!);
@@ -91,142 +93,230 @@ const RoomDetails: React.FC = () => {
   }
 
   return (
-    <Container maxWidth="lg">
-      <Box sx={{ my: 4 }}>
-        <Grid container spacing={4}>
-          <Grid size={{ xs: 12, md: 7 }}>
-            <CardMedia
-              component="img"
-              height="400"
-              image={
-                selectedImage ||
-                room.imageUrl ||
-                'https://via.placeholder.com/600x400?text=Room+Image'
-              }
-              alt={room.name}
-              sx={{ borderRadius: 2, mb: 2, objectFit: 'cover' }}
-            />
+    <Box
+      sx={{
+        minHeight: '100vh',
+        bgcolor: 'background.default',
+        py: { xs: 4, md: 6 },
+      }}
+    >
+      <Container maxWidth="lg">
+        <Button
+          startIcon={<ArrowBack />}
+          onClick={() => navigate('/rooms')}
+          sx={{
+            mb: 3,
+            color: isDarkMode ? '#FFD700' : 'primary.main',
+            '&:hover': {
+              backgroundColor: isDarkMode ? 'rgba(255,215,0,0.1)' : 'rgba(25,118,210,0.1)',
+            },
+          }}
+        >
+          Back to Rooms
+        </Button>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1.4fr 1fr' }, gap: 4 }}>
+          <Box>
+            <Box
+              sx={{
+                borderRadius: 3,
+                overflow: 'hidden',
+                border: isDarkMode ? '1px solid rgba(255,215,0,0.2)' : '1px solid',
+                borderColor: isDarkMode ? 'rgba(255,215,0,0.2)' : 'divider',
+                mb: 2,
+              }}
+            >
+              <CardMedia
+                component="img"
+                height="500"
+                image={
+                  selectedImage ||
+                  room.imageUrl ||
+                  'https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=1200'
+                }
+                alt={room.name}
+                sx={{ objectFit: 'cover' }}
+              />
+            </Box>
 
-            <Grid container spacing={1}>
+            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1 }}>
               {/* Main image thumbnail */}
-              <Grid size={{ xs: 4 }}>
+              <Box>
                 <CardMedia
                   component="img"
-                  height="120"
-                  image={room.imageUrl || 'https://via.placeholder.com/200x120?text=Room'}
+                  height="140"
+                  image={room.imageUrl || 'https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=400'}
                   alt={room.name}
                   sx={{
-                    borderRadius: 1,
+                    borderRadius: 2,
                     cursor: 'pointer',
                     border:
                       !selectedImage || selectedImage === room.imageUrl
-                        ? '3px solid #1976d2'
-                        : '3px solid transparent',
+                        ? '3px solid #FFD700'
+                        : '3px solid rgba(255,215,0,0.2)',
                     transition: 'all 0.3s ease',
                     '&:hover': {
                       opacity: 0.8,
                       transform: 'scale(1.05)',
+                      borderColor: '#FFD700',
                     },
                     objectFit: 'cover',
                   }}
                   onClick={() => setSelectedImage(room.imageUrl || '')}
                 />
-              </Grid>
+              </Box>
 
               {/* Additional images thumbnails */}
               {room.additionalImages &&
                 room.additionalImages.map((img, index) => (
-                  <Grid size={{ xs: 4 }} key={index}>
+                  <Box key={index}>
                     <CardMedia
                       component="img"
-                      height="120"
+                      height="140"
                       image={img}
                       alt={`${room.name} ${index + 1}`}
                       sx={{
-                        borderRadius: 1,
+                        borderRadius: 2,
                         cursor: 'pointer',
                         border:
-                          selectedImage === img ? '3px solid #1976d2' : '3px solid transparent',
+                          selectedImage === img ? '3px solid #FFD700' : '3px solid rgba(255,215,0,0.2)',
                         transition: 'all 0.3s ease',
                         '&:hover': {
                           opacity: 0.8,
                           transform: 'scale(1.05)',
+                          borderColor: '#FFD700',
                         },
                         objectFit: 'cover',
                       }}
                       onClick={() => setSelectedImage(img)}
                     />
-                  </Grid>
+                  </Box>
                 ))}
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
 
-          <Grid size={{ xs: 12, md: 5 }}>
-            <Card sx={{ p: 3 }}>
-              <Typography variant="h4" gutterBottom>
+          <Box>
+            <Card
+              sx={{
+                p: 4,
+                bgcolor: isDarkMode ? 'rgba(26,26,26,0.95)' : 'background.paper',
+                border: '1px solid',
+                borderColor: isDarkMode ? 'rgba(255,215,0,0.2)' : 'divider',
+                borderRadius: 3,
+                backdropFilter: isDarkMode ? 'blur(10px)' : 'none',
+                boxShadow: isDarkMode ? 'none' : 2,
+              }}
+            >
+              <Typography
+                variant="h3"
+                gutterBottom
+                sx={{
+                  color: isDarkMode ? '#FFD700' : 'primary.main',
+                  fontWeight: 700,
+                  mb: 2,
+                }}
+              >
                 {room.name}
               </Typography>
 
-              <Box sx={{ mb: 2 }}>
-                <Chip label={room.type} color="primary" sx={{ mr: 1 }} />
+              <Box sx={{ mb: 3, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                <Chip
+                  label={room.type}
+                  sx={{
+                    backgroundColor: isDarkMode ? 'rgba(255,215,0,0.1)' : 'rgba(25,118,210,0.1)',
+                    color: isDarkMode ? '#FFD700' : 'primary.main',
+                    border: isDarkMode ? '1px solid rgba(255,215,0,0.3)' : '1px solid rgba(25,118,210,0.3)',
+                    borderRadius: '16px',
+                    height: '28px',
+                    fontSize: '0.8125rem',
+                    fontWeight: 500,
+                  }}
+                />
                 {room.available ? (
-                  <Chip label="Available" color="success" />
+                  <Chip label="Available" color="success" sx={{ borderRadius: '16px', height: '28px' }} />
                 ) : (
-                  <Chip label="Not Available" color="error" />
+                  <Chip label="Not Available" color="error" sx={{ borderRadius: '16px', height: '28px' }} />
                 )}
               </Box>
 
-              <Typography variant="h5" color="primary" gutterBottom>
-                ${room.pricePerNight} / night
+              <Typography
+                variant="h4"
+                gutterBottom
+                sx={{
+                  color: isDarkMode ? '#FFD700' : 'primary.main',
+                  fontWeight: 600,
+                  mb: 3,
+                }}
+              >
+                ${room.pricePerNight}
+                <Typography component="span" variant="body1" sx={{ color: isDarkMode ? 'rgba(255,255,255,0.6)' : 'text.secondary' }}>
+                  {' '}/ night
+                </Typography>
               </Typography>
 
-              <Typography variant="body1" color="text.secondary" paragraph>
+              <Typography variant="body1" sx={{ color: isDarkMode ? 'rgba(255,255,255,0.8)' : 'text.primary', mb: 3 }}>
                 {room.description}
               </Typography>
 
-              <List dense>
-                <ListItem>
+              <List dense sx={{ mb: 3 }}>
+                <ListItem sx={{ px: 0 }}>
                   <ListItemIcon>
-                    <People />
+                    <People sx={{ color: isDarkMode ? '#FFD700' : 'primary.main' }} />
                   </ListItemIcon>
-                  <ListItemText primary={`Capacity: ${room.capacity} guests`} />
+                  <ListItemText
+                    primary={`Capacity: ${room.capacity} guests`}
+                    sx={{ '& .MuiListItemText-primary': { color: isDarkMode ? 'rgba(255,255,255,0.9)' : 'text.primary' } }}
+                  />
                 </ListItem>
-                <ListItem>
+                <ListItem sx={{ px: 0 }}>
                   <ListItemIcon>
-                    <AspectRatio />
+                    <AspectRatio sx={{ color: isDarkMode ? '#FFD700' : 'primary.main' }} />
                   </ListItemIcon>
-                  <ListItemText primary={`Size: ${room.size} sq ft`} />
+                  <ListItemText
+                    primary={`Size: ${room.size} sq ft`}
+                    sx={{ '& .MuiListItemText-primary': { color: isDarkMode ? 'rgba(255,255,255,0.9)' : 'text.primary' } }}
+                  />
                 </ListItem>
-                <ListItem>
+                <ListItem sx={{ px: 0 }}>
                   <ListItemIcon>
-                    <Stairs />
+                    <Stairs sx={{ color: isDarkMode ? '#FFD700' : 'primary.main' }} />
                   </ListItemIcon>
-                  <ListItemText primary={`Floor: ${room.floorNumber}`} />
+                  <ListItemText
+                    primary={`Floor: ${room.floorNumber}`}
+                    sx={{ '& .MuiListItemText-primary': { color: isDarkMode ? 'rgba(255,255,255,0.9)' : 'text.primary' } }}
+                  />
                 </ListItem>
               </List>
 
-              <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+              <Typography variant="h6" gutterBottom sx={{ color: isDarkMode ? '#FFD700' : 'primary.main', fontWeight: 600 }}>
                 Amenities
               </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 3 }}>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 4 }}>
                 {room.amenities?.map((amenity, index) => (
                   <Chip
                     key={index}
-                    icon={<CheckCircle />}
+                    icon={<CheckCircle sx={{ color: isDarkMode ? '#FFD700 !important' : 'primary.main' }} />}
                     label={amenity}
-                    variant="outlined"
+                    sx={{
+                      backgroundColor: isDarkMode ? 'rgba(255,215,0,0.1)' : 'rgba(25,118,210,0.1)',
+                      color: isDarkMode ? 'rgba(255,255,255,0.9)' : 'text.primary',
+                      border: isDarkMode ? '1px solid rgba(255,215,0,0.3)' : '1px solid rgba(25,118,210,0.3)',
+                      borderRadius: '16px',
+                      height: '28px',
+                      fontSize: '0.8125rem',
+                      fontWeight: 500,
+                    }}
                     size="small"
                   />
                 ))}
               </Box>
 
               <Box component="form" sx={{ mt: 3 }}>
-                <Typography variant="subtitle2" gutterBottom>
+                <Typography variant="h6" gutterBottom sx={{ color: isDarkMode ? '#FFD700' : 'primary.main', fontWeight: 600, mb: 2 }}>
                   Select Your Stay
                 </Typography>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <Grid container spacing={2} sx={{ mb: 2 }}>
-                    <Grid size={{ xs: 12, sm: 6 }}>
+                  <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2, mb: 3 }}>
+                    <Box>
                       <DatePicker
                         label="Check-in Date"
                         value={checkInDate}
@@ -236,11 +326,77 @@ const RoomDetails: React.FC = () => {
                         slotProps={{
                           textField: {
                             fullWidth: true,
+                            InputProps: {
+                              style: { color: isDarkMode ? '#fff' : undefined },
+                            },
+                            inputProps: {
+                              style: { color: isDarkMode ? '#fff' : undefined },
+                            },
+                            sx: isDarkMode ? {
+                              '& .MuiOutlinedInput-root': {
+                                color: '#fff',
+                                '& fieldset': {
+                                  borderColor: 'rgba(255,215,0,0.3)',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: 'rgba(255,215,0,0.5)',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#FFD700',
+                                },
+                              },
+                              '& input': {
+                                color: '#fff !important',
+                              },
+                              '& .MuiInputLabel-root': {
+                                color: 'rgba(255,255,255,0.7)',
+                                '&.Mui-focused': {
+                                  color: '#FFD700',
+                                },
+                              },
+                              '& .MuiIconButton-root': {
+                                color: '#FFD700',
+                              },
+                            } : {},
+                          },
+                          popper: {
+                            sx: isDarkMode ? {
+                              '& .MuiPaper-root': {
+                                bgcolor: '#1a1a1a',
+                                border: '1px solid rgba(255,215,0,0.2)',
+                                color: '#fff',
+                              },
+                              '& .MuiPickersDay-root': {
+                                color: '#fff',
+                                '&:hover': {
+                                  bgcolor: 'rgba(255,215,0,0.1)',
+                                },
+                                '&.Mui-selected': {
+                                  bgcolor: '#FFD700 !important',
+                                  color: '#000',
+                                  '&:hover': {
+                                    bgcolor: '#FFA500 !important',
+                                  },
+                                },
+                                '&.Mui-disabled': {
+                                  color: 'rgba(255,255,255,0.3)',
+                                },
+                              },
+                              '& .MuiPickersCalendarHeader-label': {
+                                color: '#FFD700',
+                              },
+                              '& .MuiPickersArrowSwitcher-button': {
+                                color: '#FFD700',
+                              },
+                              '& .MuiDayCalendar-weekDayLabel': {
+                                color: 'rgba(255,255,255,0.7)',
+                              },
+                            } : {},
                           },
                         }}
                       />
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6 }}>
+                    </Box>
+                    <Box>
                       <DatePicker
                         label="Check-out Date"
                         value={checkOutDate}
@@ -253,11 +409,85 @@ const RoomDetails: React.FC = () => {
                         slotProps={{
                           textField: {
                             fullWidth: true,
+                            InputProps: {
+                              style: { color: isDarkMode ? '#fff' : undefined },
+                            },
+                            inputProps: {
+                              style: { color: isDarkMode ? '#fff' : undefined },
+                            },
+                            sx: isDarkMode ? {
+                              '& .MuiOutlinedInput-root': {
+                                color: '#fff',
+                                '& fieldset': {
+                                  borderColor: 'rgba(255,215,0,0.3)',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: 'rgba(255,215,0,0.5)',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#FFD700',
+                                },
+                                '&.Mui-disabled': {
+                                  '& fieldset': {
+                                    borderColor: 'rgba(255,215,0,0.2)',
+                                  },
+                                },
+                              },
+                              '& input': {
+                                color: '#fff !important',
+                              },
+                              '& .MuiInputLabel-root': {
+                                color: 'rgba(255,255,255,0.7)',
+                                '&.Mui-focused': {
+                                  color: '#FFD700',
+                                },
+                                '&.Mui-disabled': {
+                                  color: 'rgba(255,255,255,0.4)',
+                                },
+                              },
+                              '& .MuiIconButton-root': {
+                                color: '#FFD700',
+                              },
+                            } : {},
+                          },
+                          popper: {
+                            sx: isDarkMode ? {
+                              '& .MuiPaper-root': {
+                                bgcolor: '#1a1a1a',
+                                border: '1px solid rgba(255,215,0,0.2)',
+                                color: '#fff',
+                              },
+                              '& .MuiPickersDay-root': {
+                                color: '#fff',
+                                '&:hover': {
+                                  bgcolor: 'rgba(255,215,0,0.1)',
+                                },
+                                '&.Mui-selected': {
+                                  bgcolor: '#FFD700 !important',
+                                  color: '#000',
+                                  '&:hover': {
+                                    bgcolor: '#FFA500 !important',
+                                  },
+                                },
+                                '&.Mui-disabled': {
+                                  color: 'rgba(255,255,255,0.3)',
+                                },
+                              },
+                              '& .MuiPickersCalendarHeader-label': {
+                                color: '#FFD700',
+                              },
+                              '& .MuiPickersArrowSwitcher-button': {
+                                color: '#FFD700',
+                              },
+                              '& .MuiDayCalendar-weekDayLabel': {
+                                color: 'rgba(255,255,255,0.7)',
+                              },
+                            } : {},
                           },
                         }}
                       />
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6 }}>
+                    </Box>
+                    <Box>
                       <TextField
                         fullWidth
                         type="number"
@@ -266,8 +496,8 @@ const RoomDetails: React.FC = () => {
                         onChange={(e) => setGuests(parseInt(e.target.value))}
                         inputProps={{ min: 1, max: room.capacity }}
                       />
-                    </Grid>
-                  </Grid>
+                    </Box>
+                  </Box>
                 </LocalizationProvider>
 
                 <Button
@@ -276,15 +506,32 @@ const RoomDetails: React.FC = () => {
                   size="large"
                   onClick={handleBookNow}
                   disabled={!room.available || !checkInDate || !checkOutDate}
+                  sx={{
+                    py: 1.5,
+                    background: isDarkMode ? 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)' : 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)',
+                    color: isDarkMode ? '#000' : '#fff',
+                    fontWeight: 600,
+                    fontSize: '1.1rem',
+                    '&:hover': {
+                      background: isDarkMode ? 'linear-gradient(135deg, #FFA500 0%, #FFD700 100%)' : 'linear-gradient(135deg, #42a5f5 0%, #1976d2 100%)',
+                      transform: 'translateY(-2px)',
+                      boxShadow: isDarkMode ? '0 8px 20px rgba(255,215,0,0.3)' : '0 8px 20px rgba(25,118,210,0.3)',
+                    },
+                    transition: 'all 0.3s ease',
+                    '&.Mui-disabled': {
+                      background: isDarkMode ? 'rgba(255,215,0,0.3)' : 'rgba(25,118,210,0.3)',
+                      color: 'rgba(0,0,0,0.5)',
+                    },
+                  }}
                 >
                   {isAuthenticated ? 'Book Now' : 'Login to Book'}
                 </Button>
               </Box>
             </Card>
-          </Grid>
-        </Grid>
-      </Box>
-    </Container>
+          </Box>
+        </Box>
+      </Container>
+    </Box>
   );
 };
 

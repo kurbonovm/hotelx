@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 
 /**
- * Main application class for the Hotel Reservation System.
+ * Main application class for HotelX.
  * This class bootstraps the Spring Boot application.
  *
- * @author Hotel Reservation Team
+ * @author HotelX Team
  * @version 1.0
  */
 @SpringBootApplication

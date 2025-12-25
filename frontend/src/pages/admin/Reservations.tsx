@@ -22,7 +22,6 @@ import {
   Box,
   TextField,
   InputAdornment,
-  Grid,
   SelectChangeEvent,
 } from '@mui/material';
 import { Search, FilterList } from '@mui/icons-material';
@@ -130,8 +129,8 @@ const AdminReservations: React.FC = () => {
       )}
 
       <Box sx={{ mb: 3 }}>
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12, md: 8 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 1fr' }, gap: 2 }}>
+          <Box>
             <TextField
               fullWidth
               placeholder="Search by guest name, email, room, or reservation ID..."
@@ -145,8 +144,8 @@ const AdminReservations: React.FC = () => {
                 ),
               }}
             />
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
+          </Box>
+          <Box>
             <FormControl fullWidth>
               <InputLabel>Filter by Status</InputLabel>
               <Select
@@ -167,8 +166,8 @@ const AdminReservations: React.FC = () => {
                 <MenuItem value="CANCELLED">Cancelled</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Box>
 
       <TableContainer component={Paper}>

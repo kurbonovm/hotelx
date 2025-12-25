@@ -5,7 +5,6 @@ import {
   Box,
   Card,
   CardContent,
-  Grid,
   Chip,
   Button,
   Alert,
@@ -192,9 +191,9 @@ const Reservations: React.FC = () => {
     }
 
     return (
-      <Grid container spacing={3} sx={{ mt: 1 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 3, mt: 1 }}>
         {reservationList.map((reservation) => (
-            <Grid size={{ xs: 12 }} key={reservation.id}>
+            <Box key={reservation.id}>
               <Card>
                 <CardContent>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, gap: 2, flexWrap: 'wrap' }}>
@@ -209,8 +208,8 @@ const Reservations: React.FC = () => {
                     />
                   </Box>
 
-                  <Grid container spacing={2}>
-                    <Grid size={{ xs: 12, sm: 6 }}>
+                  <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
+                    <Box>
                       <Typography variant="body1" color="text.secondary">
                         <strong>Room:</strong> {reservation.room?.name}
                       </Typography>
@@ -225,8 +224,8 @@ const Reservations: React.FC = () => {
                         <strong>Check-out:</strong>{' '}
                         {parseDate(reservation.checkOutDate).toLocaleDateString()}
                       </Typography>
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6 }}>
+                    </Box>
+                    <Box>
                       <Typography variant="body1" color="text.secondary">
                         <strong>Guests:</strong> {reservation.numberOfGuests}
                       </Typography>
@@ -237,8 +236,8 @@ const Reservations: React.FC = () => {
                         <strong>Booked on:</strong>{' '}
                         {new Date(reservation.createdAt).toLocaleDateString()}
                       </Typography>
-                    </Grid>
-                  </Grid>
+                    </Box>
+                  </Box>
 
                   <Divider sx={{ my: 2 }} />
 
@@ -281,9 +280,9 @@ const Reservations: React.FC = () => {
                   )}
                 </CardContent>
               </Card>
-            </Grid>
+            </Box>
           ))}
-      </Grid>
+      </Box>
     );
   };
 

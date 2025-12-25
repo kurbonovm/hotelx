@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Hotel Reservation System Test
+    name: HotelX Test
 
   # MongoDB Test Configuration
   data:

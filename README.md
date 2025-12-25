@@ -1,4 +1,4 @@
-# Hotel Reservation System
+# HotelX
 
 A modern, full-stack hotel reservation platform built with Spring Boot, MongoDB, React, Redux, and Stripe for secure payment processing.
 
@@ -279,7 +279,7 @@ See individual README files in `backend/` and `frontend/` for detailed deploymen
 
 ## License
 
-This project is developed as part of the Hotel Reservation System requirements.
+This project is developed as part of the HotelX requirements.
 
 ## Contributors
 

@@ -1,6 +1,6 @@
-# Hotel Reservation System - Backend
+# HotelX - Backend
 
-Spring Boot REST API for the Hotel Reservation System with MongoDB, Spring Security, OAuth2, and Stripe integration.
+Spring Boot REST API for HotelX with MongoDB, Spring Security, OAuth2, and Stripe integration.
 
 ## Tech Stack
 
@@ -348,4 +348,4 @@ All classes and methods are documented with JavaDoc comments following industry 
 
 ## License
 
-This project is part of the Hotel Reservation System.
+This project is part of HotelX.

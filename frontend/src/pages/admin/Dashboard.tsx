@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Grid,
   Card,
   CardContent,
   Typography,
@@ -85,9 +84,9 @@ const AdminDashboard: React.FC = () => {
         Admin Dashboard
       </Typography>
 
-      <Grid container spacing={3}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
         {stats.map((stat, index) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
+          <Box key={index}>
             <Card>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -103,9 +102,9 @@ const AdminDashboard: React.FC = () => {
                 </Box>
               </CardContent>
             </Card>
-          </Grid>
+          </Box>
         ))}
-      </Grid>
+      </Box>
     </AdminLayout>
   );
 };

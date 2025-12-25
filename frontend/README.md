@@ -1,6 +1,6 @@
-# Hotel Reservation System - Frontend
+# HotelX - Frontend
 
-A modern, responsive React frontend for the Hotel Reservation System built with Redux, RTK Query, and Material-UI.
+A modern, responsive React frontend for HotelX built with Redux, RTK Query, and Material-UI.
 
 ## 🚀 Tech Stack
 
@@ -224,7 +224,7 @@ npm run build
 
 ## 📝 License
 
-This project is part of the Hotel Reservation System.
+This project is part of HotelX.
 
 ## 👥 Contributing
 

@@ -1,4 +1,4 @@
-## 🏨 Hotel Reservation System: Project Specification
+## 🏨 HotelX: Project Specification
 
 This document outlines the objectives, functional, non-functional, and technical requirements for developing a modern, full-stack **Hotel Reservation Platform**.
 

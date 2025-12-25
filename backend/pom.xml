@@ -15,7 +15,7 @@
     <groupId>com.hotel</groupId>
     <artifactId>reservation-system</artifactId>
     <version>1.0.0</version>
-    <name>Hotel Reservation System</name>
+    <name>HotelX</name>
     <description>Hotel Reservation Platform with Spring Boot and MongoDB</description>
 
     <properties>

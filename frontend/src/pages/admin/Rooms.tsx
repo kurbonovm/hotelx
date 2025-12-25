@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Typography,
-  Grid,
   Card,
   CardContent,
   CardMedia,
@@ -42,34 +41,34 @@ const AdminRooms: React.FC = () => {
 
       {stats && (
         <Paper sx={{ p: 3, mb: 3 }}>
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 4 }}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' }, gap: 2 }}>
+            <Box>
               <Typography variant="h6">Total Rooms</Typography>
               <Typography variant="h4">{stats.totalRooms}</Typography>
-            </Grid>
-            <Grid size={{ xs: 12, sm: 4 }}>
+            </Box>
+            <Box>
               <Typography variant="h6">Available</Typography>
               <Typography variant="h4" color="success.main">
                 {stats.availableRooms}
               </Typography>
-            </Grid>
-            <Grid size={{ xs: 12, sm: 4 }}>
+            </Box>
+            <Box>
               <Typography variant="h6">Occupied</Typography>
               <Typography variant="h4" color="warning.main">
                 {stats.occupiedRooms}
               </Typography>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         </Paper>
       )}
 
-      <Grid container spacing={3}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
         {rooms?.map((room: Room) => {
           const occupiedCount = roomOccupancyCount.get(room.id) || 0;
           const availableCount = (room.totalRooms || 1) - occupiedCount;
           const isFullyOccupied = availableCount <= 0;
           return (
-            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={room.id}>
+            <Box key={room.id}>
               <Card>
                 <CardMedia
                   component="img"
@@ -100,10 +99,10 @@ const AdminRooms: React.FC = () => {
                   </Typography>
                 </CardContent>
               </Card>
-            </Grid>
+            </Box>
           );
         })}
-      </Grid>
+      </Box>
     </AdminLayout>
   );
 };

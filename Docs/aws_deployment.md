@@ -1,4 +1,4 @@
-# AWS Infrastructure Documentation - Hotel Reservation System
+# AWS Infrastructure Documentation - HotelX
 
 Complete AWS infrastructure deployment guide and current production status.
 

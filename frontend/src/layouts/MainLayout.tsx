@@ -29,8 +29,11 @@ import {
   AccountCircle as AccountCircleIcon,
   AdminPanelSettings as AdminIcon,
   Logout as LogoutIcon,
+  Brightness4 as DarkModeIcon,
+  Brightness7 as LightModeIcon,
 } from '@mui/icons-material';
 import { selectCurrentUser, selectIsAuthenticated, logout } from '../features/auth/authSlice';
+import { useThemeMode } from '../contexts/ThemeContext';
 
 interface NavigationItem {
   text: string;
@@ -47,6 +50,7 @@ const MainLayout: React.FC = () => {
   const location = useLocation();
   const user = useSelector(selectCurrentUser);
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const { mode, toggleTheme } = useThemeMode();
 
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
@@ -99,7 +103,11 @@ const MainLayout: React.FC = () => {
 
   const drawer = (
     <Box
-      sx={{ width: 250 }}
+      sx={{
+        width: 250,
+        background: 'linear-gradient(135deg, #1a1a1a 0%, #000 100%)',
+        height: '100%',
+      }}
       role="presentation"
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
@@ -107,9 +115,16 @@ const MainLayout: React.FC = () => {
       <List>
         {navigationItems.map((item) => (
           <ListItem key={item.text} disablePadding>
-            <ListItemButton onClick={() => navigate(item.path)}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
+            <ListItemButton
+              onClick={() => navigate(item.path)}
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'rgba(255,215,0,0.1)',
+                },
+              }}
+            >
+              <ListItemIcon sx={{ color: '#FFD700' }}>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} sx={{ color: '#fff' }} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -119,20 +134,29 @@ const MainLayout: React.FC = () => {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <AppBar position="static">
+      <AppBar
+        position="static"
+        sx={{
+          background: 'linear-gradient(135deg, #1a1a1a 0%, #000 100%)',
+          borderBottom: '1px solid rgba(255,215,0,0.2)',
+        }}
+      >
         <Toolbar sx={{ px: { xs: 2, sm: 3 } }}>
             <IconButton
               size="large"
               edge="start"
-              color="inherit"
               aria-label="menu"
-              sx={{ mr: 2, display: { xs: 'flex', md: 'none' } }}
+              sx={{
+                mr: 2,
+                display: { xs: 'flex', md: 'none' },
+                color: '#FFD700',
+              }}
               onClick={toggleDrawer(true)}
             >
               <MenuIcon />
             </IconButton>
 
-            <HotelIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+            <HotelIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: '#FFD700' }} />
             <Typography
               variant="h6"
               noWrap
@@ -142,10 +166,14 @@ const MainLayout: React.FC = () => {
                 display: { xs: 'none', md: 'flex' },
                 fontWeight: 700,
                 cursor: 'pointer',
+                background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
               }}
               onClick={() => navigate('/')}
             >
-              Hotel Reservation System
+              HotelX
             </Typography>
 
             <Typography
@@ -157,10 +185,14 @@ const MainLayout: React.FC = () => {
                 display: { xs: 'flex', md: 'none' },
                 fontWeight: 700,
                 cursor: 'pointer',
+                background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
               }}
               onClick={() => navigate('/')}
             >
-              HRS
+              HotelX
             </Typography>
 
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, ml: 2 }}>
@@ -168,22 +200,64 @@ const MainLayout: React.FC = () => {
                 <Button
                   key={item.text}
                   onClick={() => navigate(item.path)}
-                  sx={{ color: 'white' }}
+                  sx={{
+                    color: '#fff',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255,215,0,0.1)',
+                      color: '#FFD700',
+                    },
+                  }}
                 >
                   {item.text}
                 </Button>
               ))}
             </Box>
 
+            <Tooltip title={`Switch to ${mode === 'dark' ? 'light' : 'dark'} mode`}>
+              <IconButton
+                onClick={toggleTheme}
+                sx={{
+                  ml: 1,
+                  color: '#FFD700',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255,215,0,0.1)',
+                  },
+                }}
+              >
+                {mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+              </IconButton>
+            </Tooltip>
+
             {isAuthenticated ? (
               <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt={user?.firstName || 'User'} src={user?.avatar} />
+                  <IconButton
+                    onClick={handleOpenUserMenu}
+                    sx={{
+                      p: 0,
+                      border: '2px solid rgba(255,215,0,0.3)',
+                      '&:hover': {
+                        borderColor: '#FFD700',
+                      },
+                    }}
+                  >
+                    <Avatar
+                      alt={user?.firstName || 'User'}
+                      src={user?.avatar}
+                      sx={{
+                        background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                      }}
+                    />
                   </IconButton>
                 </Tooltip>
                 <Menu
-                  sx={{ mt: '45px' }}
+                  sx={{
+                    mt: '45px',
+                    '& .MuiPaper-root': {
+                      background: 'rgba(26,26,26,0.98)',
+                      border: '1px solid rgba(255,215,0,0.2)',
+                    },
+                  }}
                   id="menu-appbar"
                   anchorEl={anchorElUser}
                   anchorOrigin={{
@@ -198,27 +272,62 @@ const MainLayout: React.FC = () => {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
-                  <MenuItem onClick={() => { navigate('/profile'); handleCloseUserMenu(); }}>
+                  <MenuItem
+                    onClick={() => { navigate('/profile'); handleCloseUserMenu(); }}
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: 'rgba(255,215,0,0.1)',
+                      },
+                    }}
+                  >
                     <ListItemIcon>
-                      <AccountCircleIcon fontSize="small" />
+                      <AccountCircleIcon fontSize="small" sx={{ color: '#FFD700' }} />
                     </ListItemIcon>
-                    <Typography textAlign="center">Profile</Typography>
+                    <Typography sx={{ color: '#fff' }}>Profile</Typography>
                   </MenuItem>
-                  <Divider />
-                  <MenuItem onClick={handleLogout}>
+                  <Divider sx={{ borderColor: 'rgba(255,215,0,0.2)' }} />
+                  <MenuItem
+                    onClick={handleLogout}
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: 'rgba(255,215,0,0.1)',
+                      },
+                    }}
+                  >
                     <ListItemIcon>
-                      <LogoutIcon fontSize="small" />
+                      <LogoutIcon fontSize="small" sx={{ color: '#FFD700' }} />
                     </ListItemIcon>
-                    <Typography textAlign="center">Logout</Typography>
+                    <Typography sx={{ color: '#fff' }}>Logout</Typography>
                   </MenuItem>
                 </Menu>
               </Box>
             ) : (
               <Box sx={{ display: 'flex', gap: 1 }}>
-                <Button color="inherit" onClick={() => navigate('/login')}>
+                <Button
+                  onClick={() => navigate('/login')}
+                  sx={{
+                    color: '#fff',
+                    borderColor: 'rgba(255,215,0,0.3)',
+                    '&:hover': {
+                      borderColor: '#FFD700',
+                      backgroundColor: 'rgba(255,215,0,0.1)',
+                      color: '#FFD700',
+                    },
+                  }}
+                >
                   Login
                 </Button>
-                <Button color="inherit" onClick={() => navigate('/register')}>
+                <Button
+                  onClick={() => navigate('/register')}
+                  sx={{
+                    background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                    color: '#000',
+                    fontWeight: 600,
+                    '&:hover': {
+                      background: 'linear-gradient(135deg, #FFA500 0%, #FFD700 100%)',
+                    },
+                  }}
+                >
                   Register
                 </Button>
               </Box>
@@ -230,9 +339,9 @@ const MainLayout: React.FC = () => {
         {drawer}
       </Drawer>
 
-      <Container component="main" maxWidth="xl" sx={{ flexGrow: 1, py: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1 }}>
         <Outlet />
-      </Container>
+      </Box>
 
       <Box
         component="footer"
@@ -240,15 +349,13 @@ const MainLayout: React.FC = () => {
           py: 3,
           px: 2,
           mt: 'auto',
-          backgroundColor: (theme) =>
-            theme.palette.mode === 'light'
-              ? theme.palette.grey[200]
-              : theme.palette.grey[800],
+          background: 'linear-gradient(135deg, #1a1a1a 0%, #000 100%)',
+          borderTop: '1px solid rgba(255,215,0,0.2)',
         }}
       >
         <Container maxWidth="xl">
-          <Typography variant="body2" color="text.secondary" align="center">
-            © 2025 Hotel Reservation System. All rights reserved.
+          <Typography variant="body2" align="center" sx={{ color: 'rgba(255,255,255,0.7)' }}>
+            © 2025 HotelX. All rights reserved.
           </Typography>
         </Container>
       </Box>

@@ -3,7 +3,6 @@ import {
   Container,
   Box,
   Typography,
-  Grid,
   Card,
   CardContent,
   CardMedia,
@@ -14,7 +13,10 @@ import {
   CircularProgress,
   Alert,
   Chip,
+  Stack,
+  useTheme,
 } from '@mui/material';
+import { Hotel as HotelIcon, People as PeopleIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useGetRoomsQuery } from '../features/rooms/roomsApi';
 import { useGetAllReservationsAdminQuery } from '../features/admin/adminApi';
@@ -25,6 +27,8 @@ import { Room, RoomType } from '../types';
  */
 const Rooms: React.FC = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isDarkMode = theme.palette.mode === 'dark';
   const [filters, setFilters] = useState<{
     type?: string;
     minPrice?: string;
@@ -73,29 +77,90 @@ const Rooms: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
-        <CircularProgress />
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '60vh',
+          bgcolor: 'background.default',
+        }}
+      >
+        <CircularProgress sx={{ color: isDarkMode ? '#FFD700' : 'primary.main' }} size={60} />
       </Box>
     );
   }
 
   if (error) {
     return (
-      <Container>
-        <Alert severity="error">Failed to load rooms. Please try again later.</Alert>
+      <Container sx={{ py: 4 }}>
+        <Alert
+          severity="error"
+          sx={{
+            backgroundColor: 'rgba(211,47,47,0.1)',
+            color: '#ff6b6b',
+            border: '1px solid rgba(211,47,47,0.3)',
+          }}
+        >
+          Failed to load rooms. Please try again later.
+        </Alert>
       </Container>
     );
   }
 
   return (
-    <Container maxWidth="lg">
-      <Typography variant="h3" component="h1" gutterBottom>
-        Browse Rooms
-      </Typography>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        bgcolor: 'background.default',
+        py: { xs: 4, md: 6 },
+      }}
+    >
+      <Container maxWidth="lg">
+        <Box sx={{ mb: { xs: 4, md: 6 }, textAlign: 'center' }}>
+          <Typography
+            variant="h2"
+            component="h1"
+            gutterBottom
+            sx={{
+              background: isDarkMode ? 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)' : 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontWeight: 700,
+              mb: 2,
+              fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+            }}
+          >
+            Our Luxury Rooms
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              color: isDarkMode ? 'rgba(255,255,255,0.7)' : 'text.secondary',
+              maxWidth: '800px',
+              mx: 'auto',
+              fontSize: { xs: '1rem', sm: '1.15rem', md: '1.25rem' },
+              px: { xs: 2, sm: 0 },
+            }}
+          >
+            Experience unparalleled comfort and elegance in our carefully curated selection of rooms
+          </Typography>
+        </Box>
 
-      <Box sx={{ mb: 4 }}>
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12, sm: 4 }}>
+        <Box
+          sx={{
+            mb: { xs: 4, md: 6 },
+            p: { xs: 2.5, sm: 3, md: 4 },
+            bgcolor: isDarkMode ? 'rgba(26,26,26,0.8)' : 'background.paper',
+            borderRadius: 3,
+            border: isDarkMode ? '1px solid rgba(255,215,0,0.2)' : '1px solid',
+            borderColor: isDarkMode ? 'rgba(255,215,0,0.2)' : 'divider',
+            backdropFilter: isDarkMode ? 'blur(10px)' : 'none',
+            boxShadow: isDarkMode ? 'none' : 1,
+          }}
+        >
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField
               fullWidth
               select
@@ -117,8 +182,22 @@ const Rooms: React.FC = () => {
                 },
                 MenuProps: {
                   PaperProps: {
-                    style: {
+                    sx: {
                       maxHeight: 300,
+                      bgcolor: isDarkMode ? '#1a1a1a' : 'background.paper',
+                      border: isDarkMode ? '1px solid rgba(255,215,0,0.2)' : 'none',
+                      '& .MuiMenuItem-root': {
+                        color: isDarkMode ? '#fff' : 'text.primary',
+                        '&:hover': {
+                          bgcolor: isDarkMode ? 'rgba(255,215,0,0.1)' : 'action.hover',
+                        },
+                        '&.Mui-selected': {
+                          bgcolor: isDarkMode ? 'rgba(255,215,0,0.2)' : 'action.selected',
+                          '&:hover': {
+                            bgcolor: isDarkMode ? 'rgba(255,215,0,0.3)' : 'action.selected',
+                          },
+                        },
+                      },
                     },
                   },
                 },
@@ -131,8 +210,6 @@ const Rooms: React.FC = () => {
                 </MenuItem>
               ))}
             </TextField>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 4 }}>
             <TextField
               fullWidth
               type="number"
@@ -141,8 +218,6 @@ const Rooms: React.FC = () => {
               value={filters.minPrice}
               onChange={handleFilterChange}
             />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 4 }}>
             <TextField
               fullWidth
               type="number"
@@ -151,90 +226,162 @@ const Rooms: React.FC = () => {
               value={filters.maxPrice}
               onChange={handleFilterChange}
             />
-          </Grid>
-        </Grid>
-      </Box>
+          </Stack>
+        </Box>
 
-      {rooms && rooms.filter(room => room.available).length === 0 ? (
-        <Alert severity="info">No available rooms found matching your criteria.</Alert>
-      ) : (
-        <Grid container spacing={3}>
-          {rooms?.filter(room => room.available).map((room: Room) => {
-            const occupiedCount = roomOccupancyCount.get(room.id) || 0;
-            const availableCount = (room.totalRooms || 1) - occupiedCount;
-            const isFullyOccupied = availableCount <= 0;
-            return (
-              <Grid
-                size={{ xs: 12, sm: 6, md: 4 }}
-                key={room.id}
-                sx={{
-                  display: 'flex !important',
-                  flexBasis: 'auto !important',
-                  flexGrow: 0,
-                  flexShrink: 0,
-                  maxWidth: {
-                    xs: '100%',
-                    sm: 'calc(50% - 12px)',
-                    md: 'calc(33.333% - 16px)'
-                  }
-                }}
-              >
-                <Card sx={{
-                  height: '100%',
-                  width: '100%',
-                  display: 'flex',
-                  flexDirection: 'column'
-                }}>
+        {rooms && rooms.filter(room => room.available).length === 0 ? (
+          <Alert
+            severity="info"
+            sx={{
+              backgroundColor: 'rgba(2,136,209,0.1)',
+              color: '#4fc3f7',
+              border: '1px solid rgba(2,136,209,0.3)',
+            }}
+          >
+            No available rooms found matching your criteria.
+          </Alert>
+        ) : (
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: {
+                xs: '1fr',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(3, 1fr)',
+              },
+              gap: { xs: 2, sm: 2.5, md: 3 },
+            }}
+          >
+            {rooms?.filter(room => room.available).map((room: Room) => {
+              const occupiedCount = roomOccupancyCount.get(room.id) || 0;
+              const availableCount = (room.totalRooms || 1) - occupiedCount;
+              const isFullyOccupied = availableCount <= 0;
+              return (
+                <Card
+                  key={room.id}
+                  sx={{
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    bgcolor: isDarkMode ? 'rgba(26,26,26,0.95)' : 'background.paper',
+                    border: '1px solid',
+                    borderColor: isDarkMode ? 'rgba(255,215,0,0.2)' : 'divider',
+                    borderRadius: 2,
+                    transition: 'all 0.3s ease',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      transform: { xs: 'translateY(-4px)', md: 'translateY(-8px)' },
+                      boxShadow: isDarkMode ? '0 12px 40px rgba(255,215,0,0.3)' : '0 12px 40px rgba(25,118,210,0.3)',
+                      borderColor: isDarkMode ? 'rgba(255,215,0,0.5)' : 'primary.main',
+                    },
+                  }}
+                  onClick={() => navigate(`/rooms/${room.id}`)}
+                >
                   <CardMedia
                     component="img"
-                    height="200"
-                    image={room.imageUrl || 'https://via.placeholder.com/300x200?text=Room+Image'}
+                    height="140"
+                    image={room.imageUrl || 'https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=800'}
                     alt={room.name}
+                    sx={{
+                      objectFit: 'cover',
+                    }}
                   />
-                  <CardContent sx={{ flexGrow: 1, overflow: 'hidden' }}>
-                    <Typography gutterBottom variant="h5" component="h2">
+                  <CardContent sx={{
+                    flexGrow: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    p: { xs: 1.5, md: 2 },
+                  }}>
+                    <Typography
+                      gutterBottom
+                      variant="h6"
+                      component="h2"
+                      sx={{
+                        color: isDarkMode ? '#FFD700' : 'primary.main',
+                        fontWeight: 600,
+                        mb: 1,
+                        fontSize: { xs: '1.1rem', sm: '1.15rem', md: '1.25rem' },
+                      }}
+                    >
                       {room.name}
                     </Typography>
-                    <Box sx={{ mb: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    <Stack direction="row" spacing={0.5} sx={{ mb: 1, flexWrap: 'wrap', gap: 0.5 }}>
                       <Chip
+                        icon={<HotelIcon sx={{ color: isDarkMode ? '#FFD700 !important' : 'primary.main', fontSize: '1rem !important' }} />}
                         label={room.type.charAt(0) + room.type.slice(1).toLowerCase()}
-                        color="primary"
+                        sx={{
+                          backgroundColor: isDarkMode ? 'rgba(255,215,0,0.1)' : 'rgba(25,118,210,0.1)',
+                          color: isDarkMode ? '#FFD700' : 'primary.main',
+                          border: isDarkMode ? '1px solid rgba(255,215,0,0.3)' : '1px solid rgba(25,118,210,0.3)',
+                          borderRadius: '16px',
+                          height: '28px',
+                          fontSize: '0.8125rem',
+                          fontWeight: 500,
+                          '& .MuiChip-label': {
+                            px: 1.5,
+                          },
+                          '& .MuiChip-icon': {
+                            ml: 1,
+                          },
+                        }}
                         size="small"
                       />
-                      <Chip label={`${room.capacity} Guests`} size="small" />
+                      <Chip
+                        icon={<PeopleIcon sx={{ color: isDarkMode ? '#FFD700 !important' : 'primary.main', fontSize: '1rem !important' }} />}
+                        label={`${room.capacity} Guests`}
+                        sx={{
+                          backgroundColor: isDarkMode ? 'rgba(255,215,0,0.1)' : 'rgba(25,118,210,0.1)',
+                          color: isDarkMode ? '#FFD700' : 'primary.main',
+                          border: isDarkMode ? '1px solid rgba(255,215,0,0.3)' : '1px solid rgba(25,118,210,0.3)',
+                          borderRadius: '16px',
+                          height: '28px',
+                          fontSize: '0.8125rem',
+                          fontWeight: 500,
+                          '& .MuiChip-label': {
+                            px: 1.5,
+                          },
+                          '& .MuiChip-icon': {
+                            ml: 1,
+                          },
+                        }}
+                        size="small"
+                      />
                       <Chip
                         label={isFullyOccupied ? 'Fully Occupied' : `${availableCount} Available`}
                         color={isFullyOccupied ? 'error' : 'success'}
+                        sx={{
+                          borderRadius: '16px',
+                          height: '28px',
+                          fontSize: '0.8125rem',
+                          fontWeight: 500,
+                          '& .MuiChip-label': {
+                            px: 1.5,
+                          },
+                        }}
                         size="small"
                       />
-                  </Box>
-                  <Typography variant="body2" color="text.secondary" paragraph>
-                    {room.description}
-                  </Typography>
-                  <Typography variant="h6" color="primary">
-                    ${room.pricePerNight} / night
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Amenities: {room.amenities?.join(', ') || 'N/A'}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button
-                    size="small"
-                    variant="contained"
-                    fullWidth
-                    onClick={() => navigate(`/rooms/${room.id}`)}
-                  >
-                    View Details
-                  </Button>
-                </CardActions>
-              </Card>
-            </Grid>
-          );
-        })}
-        </Grid>
-      )}
-    </Container>
+                    </Stack>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        color: isDarkMode ? '#FFD700' : 'primary.main',
+                        fontWeight: 600,
+                        fontSize: { xs: '1.2rem', md: '1.3rem' },
+                      }}
+                    >
+                      ${room.pricePerNight}
+                      <Typography component="span" variant="body2" sx={{ color: isDarkMode ? 'rgba(255,255,255,0.6)' : 'text.secondary' }}>
+                        {' '}/ night
+                      </Typography>
+                    </Typography>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </Box>
+        )}
+      </Container>
+    </Box>
   );
 };
 

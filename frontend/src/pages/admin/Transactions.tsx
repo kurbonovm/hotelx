@@ -4,7 +4,6 @@ import {
   Box,
   Card,
   CardContent,
-  Grid,
   Chip,
   Table,
   TableBody,
@@ -148,8 +147,8 @@ const AdminTransactions: React.FC = () => {
       </Typography>
 
       {/* Summary Cards */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }, gap: 3, mb: 4 }}>
+        <Box>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -161,8 +160,8 @@ const AdminTransactions: React.FC = () => {
               </Typography>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        </Box>
+        <Box>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -174,8 +173,8 @@ const AdminTransactions: React.FC = () => {
               </Typography>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        </Box>
+        <Box>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -187,8 +186,8 @@ const AdminTransactions: React.FC = () => {
               </Typography>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        </Box>
+        <Box>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -200,8 +199,8 @@ const AdminTransactions: React.FC = () => {
               </Typography>
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
 
       {/* Search */}
       <TextField
@@ -326,30 +325,30 @@ const AdminTransactions: React.FC = () => {
                 <AttachMoney />
                 Payment Information
               </Typography>
-              <Grid container spacing={2} sx={{ mb: 3 }}>
-                <Grid size={{ xs: 6 }}>
+              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2, mb: 3 }}>
+                <Box>
                   <Typography variant="body2" color="text.secondary">Payment ID</Typography>
                   <Typography variant="body1" sx={{ fontFamily: 'monospace' }}>{selectedPayment.id}</Typography>
-                </Grid>
-                <Grid size={{ xs: 6 }}>
+                </Box>
+                <Box>
                   <Typography variant="body2" color="text.secondary">Amount</Typography>
                   <Typography variant="body1">
                     <strong>${Number(selectedPayment.amount).toFixed(2)}</strong> {selectedPayment.currency}
                   </Typography>
-                </Grid>
-                <Grid size={{ xs: 6 }}>
+                </Box>
+                <Box>
                   <Typography variant="body2" color="text.secondary">Stripe Payment Intent</Typography>
                   <Typography variant="body1" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
                     {selectedPayment.stripePaymentIntentId}
                   </Typography>
-                </Grid>
-                <Grid size={{ xs: 6 }}>
+                </Box>
+                <Box>
                   <Typography variant="body2" color="text.secondary">Stripe Charge ID</Typography>
                   <Typography variant="body1" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
                     {selectedPayment.stripeChargeId || 'N/A'}
                   </Typography>
-                </Grid>
-              </Grid>
+                </Box>
+              </Box>
 
               <Divider sx={{ my: 2 }} />
 
@@ -358,18 +357,18 @@ const AdminTransactions: React.FC = () => {
                 <Person />
                 Customer Information
               </Typography>
-              <Grid container spacing={2} sx={{ mb: 3 }}>
-                <Grid size={{ xs: 6 }}>
+              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2, mb: 3 }}>
+                <Box>
                   <Typography variant="body2" color="text.secondary">Email</Typography>
                   <Typography variant="body1">{selectedPayment.user?.email || 'N/A'}</Typography>
-                </Grid>
-                <Grid size={{ xs: 6 }}>
+                </Box>
+                <Box>
                   <Typography variant="body2" color="text.secondary">Name</Typography>
                   <Typography variant="body1">
                     {selectedPayment.user?.firstName} {selectedPayment.user?.lastName}
                   </Typography>
-                </Grid>
-              </Grid>
+                </Box>
+              </Box>
 
               <Divider sx={{ my: 2 }} />
 
@@ -378,16 +377,16 @@ const AdminTransactions: React.FC = () => {
                 <CreditCard />
                 Payment Method
               </Typography>
-              <Grid container spacing={2} sx={{ mb: 3 }}>
-                <Grid size={{ xs: 6 }}>
+              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2, mb: 3 }}>
+                <Box>
                   <Typography variant="body2" color="text.secondary">Card Brand</Typography>
                   <Typography variant="body1">{selectedPayment.cardBrand || 'N/A'}</Typography>
-                </Grid>
-                <Grid size={{ xs: 6 }}>
+                </Box>
+                <Box>
                   <Typography variant="body2" color="text.secondary">Last 4 Digits</Typography>
                   <Typography variant="body1">••••{selectedPayment.cardLast4 || 'N/A'}</Typography>
-                </Grid>
-              </Grid>
+                </Box>
+              </Box>
 
               <Divider sx={{ my: 2 }} />
 
@@ -396,20 +395,20 @@ const AdminTransactions: React.FC = () => {
                 <CalendarToday />
                 Dates
               </Typography>
-              <Grid container spacing={2} sx={{ mb: 3 }}>
-                <Grid size={{ xs: 6 }}>
+              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2, mb: 3 }}>
+                <Box>
                   <Typography variant="body2" color="text.secondary">Created</Typography>
                   <Typography variant="body1">
                     {new Date(selectedPayment.createdAt).toLocaleString()}
                   </Typography>
-                </Grid>
-                <Grid size={{ xs: 6 }}>
+                </Box>
+                <Box>
                   <Typography variant="body2" color="text.secondary">Last Updated</Typography>
                   <Typography variant="body1">
                     {selectedPayment.updatedAt ? new Date(selectedPayment.updatedAt).toLocaleString() : 'N/A'}
                   </Typography>
-                </Grid>
-              </Grid>
+                </Box>
+              </Box>
 
               {/* Refund Information */}
               {selectedPayment.refundAmount && (
@@ -417,24 +416,24 @@ const AdminTransactions: React.FC = () => {
                   <Divider sx={{ my: 2 }} />
                   <Alert severity="warning" sx={{ mb: 2 }}>
                     <Typography variant="h6" gutterBottom>Refund Information</Typography>
-                    <Grid container spacing={2}>
-                      <Grid size={{ xs: 6 }}>
+                    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
+                      <Box>
                         <Typography variant="body2" color="text.secondary">Refund Amount</Typography>
                         <Typography variant="body1">
                           <strong>${Number(selectedPayment.refundAmount).toFixed(2)}</strong>
                         </Typography>
-                      </Grid>
-                      <Grid size={{ xs: 6 }}>
+                      </Box>
+                      <Box>
                         <Typography variant="body2" color="text.secondary">Refund Date</Typography>
                         <Typography variant="body1">
                           {selectedPayment.refundedAt ? new Date(selectedPayment.refundedAt).toLocaleString() : 'N/A'}
                         </Typography>
-                      </Grid>
-                      <Grid size={{ xs: 12 }}>
+                      </Box>
+                      <Box sx={{ gridColumn: '1 / -1' }}>
                         <Typography variant="body2" color="text.secondary">Reason</Typography>
                         <Typography variant="body1">{selectedPayment.refundReason || 'N/A'}</Typography>
-                      </Grid>
-                    </Grid>
+                      </Box>
+                    </Box>
                   </Alert>
                 </>
               )}
