@@ -4,6 +4,10 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
+# Accept build arguments
+ARG VITE_API_URL
+ARG VITE_STRIPE_PUBLIC_KEY
+
 # Copy package files and install dependencies
 COPY package*.json ./
 RUN npm ci

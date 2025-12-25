@@ -88,7 +88,7 @@ create_vpc() {
     else
         VPC_ID=$(aws ec2 create-vpc \
             --cidr-block $VPC_CIDR \
-            --tag-specifications "ResourceType=vpc,Tags=[{Key=Name,Value=${PROJECT_NAME}-prod-vpc}]" \
+            --tag-specifications "ResourceType=vpc,Tags=[{Key=Name,Value=${PROJECT_NAME}-prod-vpc},{Key=CreatedBy,Value=mkurbonov}]" \
             --query 'Vpc.VpcId' \
             --output text \
             --region $AWS_REGION)
@@ -120,7 +120,7 @@ create_internet_gateway() {
         print_warning "Internet Gateway already exists and is attached: $IGW_ID"
     else
         IGW_ID=$(aws ec2 create-internet-gateway \
-            --tag-specifications "ResourceType=internet-gateway,Tags=[{Key=Name,Value=${PROJECT_NAME}-prod-igw}]" \
+            --tag-specifications "ResourceType=internet-gateway,Tags=[{Key=Name,Value=${PROJECT_NAME}-prod-igw},{Key=CreatedBy,Value=mkurbonov}]" \
             --query 'InternetGateway.InternetGatewayId' \
             --output text \
             --region $AWS_REGION)
@@ -167,7 +167,7 @@ get_or_create_subnet() {
             --vpc-id $VPC_ID \
             --cidr-block $CIDR \
             --availability-zone $AZ \
-            --tag-specifications "ResourceType=subnet,Tags=[{Key=Name,Value=${SUBNET_NAME}}]" \
+            --tag-specifications "ResourceType=subnet,Tags=[{Key=Name,Value=${SUBNET_NAME}},{Key=CreatedBy,Value=mkurbonov}]" \
             --query 'Subnet.SubnetId' \
             --output text \
             --region $AWS_REGION)
@@ -214,7 +214,7 @@ create_nat_gateways() {
         if [ "$EIP_1" = "None" ] || [ -z "$EIP_1" ]; then
             EIP_1=$(aws ec2 allocate-address \
                 --domain vpc \
-                --tag-specifications "ResourceType=elastic-ip,Tags=[{Key=Name,Value=${PROJECT_NAME}-nat-eip-1}]" \
+                --tag-specifications "ResourceType=elastic-ip,Tags=[{Key=Name,Value=${PROJECT_NAME}-nat-eip-1},{Key=CreatedBy,Value=mkurbonov}]" \
                 --query 'AllocationId' \
                 --output text \
                 --region $AWS_REGION)
@@ -223,7 +223,7 @@ create_nat_gateways() {
         NAT_GW_1_ID=$(aws ec2 create-nat-gateway \
             --subnet-id $PUBLIC_SUBNET_1_ID \
             --allocation-id $EIP_1 \
-            --tag-specifications "ResourceType=natgateway,Tags=[{Key=Name,Value=${PROJECT_NAME}-nat-gw-1}]" \
+            --tag-specifications "ResourceType=natgateway,Tags=[{Key=Name,Value=${PROJECT_NAME}-nat-gw-1},{Key=CreatedBy,Value=mkurbonov}]" \
             --query 'NatGateway.NatGatewayId' \
             --output text \
             --region $AWS_REGION)
@@ -251,7 +251,7 @@ create_nat_gateways() {
         if [ "$EIP_2" = "None" ] || [ -z "$EIP_2" ]; then
             EIP_2=$(aws ec2 allocate-address \
                 --domain vpc \
-                --tag-specifications "ResourceType=elastic-ip,Tags=[{Key=Name,Value=${PROJECT_NAME}-nat-eip-2}]" \
+                --tag-specifications "ResourceType=elastic-ip,Tags=[{Key=Name,Value=${PROJECT_NAME}-nat-eip-2},{Key=CreatedBy,Value=mkurbonov}]" \
                 --query 'AllocationId' \
                 --output text \
                 --region $AWS_REGION)
@@ -260,7 +260,7 @@ create_nat_gateways() {
         NAT_GW_2_ID=$(aws ec2 create-nat-gateway \
             --subnet-id $PUBLIC_SUBNET_2_ID \
             --allocation-id $EIP_2 \
-            --tag-specifications "ResourceType=natgateway,Tags=[{Key=Name,Value=${PROJECT_NAME}-nat-gw-2}]" \
+            --tag-specifications "ResourceType=natgateway,Tags=[{Key=Name,Value=${PROJECT_NAME}-nat-gw-2},{Key=CreatedBy,Value=mkurbonov}]" \
             --query 'NatGateway.NatGatewayId' \
             --output text \
             --region $AWS_REGION)
@@ -292,7 +292,7 @@ create_route_tables() {
     else
         PUBLIC_RT_ID=$(aws ec2 create-route-table \
             --vpc-id $VPC_ID \
-            --tag-specifications "ResourceType=route-table,Tags=[{Key=Name,Value=${PROJECT_NAME}-public-rt}]" \
+            --tag-specifications "ResourceType=route-table,Tags=[{Key=Name,Value=${PROJECT_NAME}-public-rt},{Key=CreatedBy,Value=mkurbonov}]" \
             --query 'RouteTable.RouteTableId' \
             --output text \
             --region $AWS_REGION)
@@ -329,7 +329,7 @@ create_route_tables() {
     else
         PRIVATE_RT_1_ID=$(aws ec2 create-route-table \
             --vpc-id $VPC_ID \
-            --tag-specifications "ResourceType=route-table,Tags=[{Key=Name,Value=${PROJECT_NAME}-private-rt-1}]" \
+            --tag-specifications "ResourceType=route-table,Tags=[{Key=Name,Value=${PROJECT_NAME}-private-rt-1},{Key=CreatedBy,Value=mkurbonov}]" \
             --query 'RouteTable.RouteTableId' \
             --output text \
             --region $AWS_REGION)
@@ -359,7 +359,7 @@ create_route_tables() {
     else
         PRIVATE_RT_2_ID=$(aws ec2 create-route-table \
             --vpc-id $VPC_ID \
-            --tag-specifications "ResourceType=route-table,Tags=[{Key=Name,Value=${PROJECT_NAME}-private-rt-2}]" \
+            --tag-specifications "ResourceType=route-table,Tags=[{Key=Name,Value=${PROJECT_NAME}-private-rt-2},{Key=CreatedBy,Value=mkurbonov}]" \
             --query 'RouteTable.RouteTableId' \
             --output text \
             --region $AWS_REGION)
@@ -399,7 +399,7 @@ get_or_create_security_group() {
             --group-name ${SG_NAME} \
             --description "$DESCRIPTION" \
             --vpc-id $VPC_ID \
-            --tag-specifications "ResourceType=security-group,Tags=[{Key=Name,Value=${SG_NAME}}]" \
+            --tag-specifications "ResourceType=security-group,Tags=[{Key=Name,Value=${SG_NAME},{Key=CreatedBy,Value=mkurbonov}}]" \
             --query 'GroupId' \
             --output text \
             --region $AWS_REGION)
@@ -578,6 +578,7 @@ create_documentdb() {
             --db-subnet-group-name ${PROJECT_NAME}-docdb-subnet-group \
             --db-subnet-group-description "Subnet group for DocumentDB" \
             --subnet-ids $PRIVATE_SUBNET_1_ID $PRIVATE_SUBNET_2_ID \
+            --tags Key=Name,Value=${PROJECT_NAME}-docdb-subnet-group Key=CreatedBy,Value=mkurbonov \
             --region $AWS_REGION
         print_success "DB subnet group created"
     fi
@@ -595,6 +596,7 @@ create_documentdb() {
         --db-subnet-group-name ${PROJECT_NAME}-docdb-subnet-group \
         --backup-retention-period 7 \
         --preferred-backup-window "03:00-04:00" \
+        --tags Key=Name,Value=${PROJECT_NAME}-prod-docdb-cluster Key=CreatedBy,Value=mkurbonov \
         --region $AWS_REGION
 
     print_info "Waiting for DocumentDB cluster to be available (this takes 10-15 minutes)..."
@@ -622,6 +624,7 @@ create_documentdb() {
         --db-instance-class db.t3.medium \
         --engine docdb \
         --db-cluster-identifier ${PROJECT_NAME}-prod-docdb-cluster \
+        --tags Key=Name,Value=${PROJECT_NAME}-prod-docdb-instance Key=CreatedBy,Value=mkurbonov \
         --region $AWS_REGION
 
     # Get cluster endpoint
@@ -662,6 +665,7 @@ create_ecr_repositories() {
             --repository-name ${PROJECT_NAME}-backend \
             --image-scanning-configuration scanOnPush=true \
             --encryption-configuration encryptionType=AES256 \
+            --tags Key=Name,Value=${PROJECT_NAME}-backend Key=CreatedBy,Value=mkurbonov \
             --query 'repository.repositoryUri' \
             --output text \
             --region $AWS_REGION)
@@ -683,6 +687,7 @@ create_ecr_repositories() {
             --repository-name ${PROJECT_NAME}-frontend \
             --image-scanning-configuration scanOnPush=true \
             --encryption-configuration encryptionType=AES256 \
+            --tags Key=Name,Value=${PROJECT_NAME}-frontend Key=CreatedBy,Value=mkurbonov \
             --query 'repository.repositoryUri' \
             --output text \
             --region $AWS_REGION)
@@ -709,6 +714,7 @@ create_ecs_cluster() {
             --capacity-providers FARGATE FARGATE_SPOT \
             --default-capacity-provider-strategy capacityProvider=FARGATE,weight=1 \
             --settings name=containerInsights,value=enabled \
+            --tags key=Name,value=${PROJECT_NAME}-prod-cluster key=CreatedBy,value=mkurbonov \
             --region $AWS_REGION
         print_success "ECS cluster created"
     fi
@@ -744,6 +750,7 @@ create_alb() {
             --scheme internet-facing \
             --type application \
             --ip-address-type ipv4 \
+            --tags Key=Name,Value=${PROJECT_NAME}-alb Key=CreatedBy,Value=mkurbonov \
             --query 'LoadBalancers[0].LoadBalancerArn' \
             --output text \
             --region $AWS_REGION)
@@ -793,6 +800,7 @@ create_alb() {
             --health-check-timeout-seconds 5 \
             --healthy-threshold-count 2 \
             --unhealthy-threshold-count 2 \
+            --tags Key=Name,Value=${PROJECT_NAME}-backend-tg Key=CreatedBy,Value=mkurbonov \
             --query 'TargetGroups[0].TargetGroupArn' \
             --output text \
             --region $AWS_REGION)
@@ -836,6 +844,12 @@ create_s3_bucket() {
         aws s3api create-bucket \
             --bucket $BUCKET_NAME \
             --region $AWS_REGION 2>/dev/null || print_warning "Bucket may already exist"
+
+        # Add tags to bucket
+        aws s3api put-bucket-tagging \
+            --bucket $BUCKET_NAME \
+            --tagging "TagSet=[{Key=Name,Value=${BUCKET_NAME}},{Key=CreatedBy,Value=mkurbonov}]" \
+            --region $AWS_REGION 2>/dev/null || true
         print_success "S3 bucket created"
     fi
 
@@ -935,6 +949,18 @@ EOF
         --output text \
         --region $AWS_REGION)
 
+    # Get the ARN and add tags
+    FRONTEND_CF_ARN=$(aws cloudfront get-distribution \
+        --id $FRONTEND_CF_ID \
+        --query 'Distribution.ARN' \
+        --output text \
+        --region $AWS_REGION)
+
+    aws cloudfront tag-resource \
+        --resource $FRONTEND_CF_ARN \
+        --tags "Items=[{Key=Name,Value=hotelx-frontend-cf},{Key=CreatedBy,Value=mkurbonov}]" \
+        --region $AWS_REGION 2>/dev/null || true
+
     rm /tmp/cf-frontend.json
 
     print_success "Frontend CloudFront distribution created: https://$FRONTEND_CF_DOMAIN"
@@ -996,6 +1022,18 @@ EOF
         --query 'Distribution.DomainName' \
         --output text \
         --region $AWS_REGION)
+
+    # Get the ARN and add tags
+    BACKEND_CF_ARN=$(aws cloudfront get-distribution \
+        --id $BACKEND_CF_ID \
+        --query 'Distribution.ARN' \
+        --output text \
+        --region $AWS_REGION)
+
+    aws cloudfront tag-resource \
+        --resource $BACKEND_CF_ARN \
+        --tags "Items=[{Key=Name,Value=hotelx-backend-cf},{Key=CreatedBy,Value=mkurbonov}]" \
+        --region $AWS_REGION 2>/dev/null || true
 
     rm /tmp/cf-backend.json
 
@@ -1069,6 +1107,106 @@ EOF
         rm /tmp/trust-policy.json
 
         print_success "ECS Task Execution Role created"
+    fi
+}
+
+# Function to create ECS task definition and service
+create_ecs_backend_service() {
+    print_info "Creating ECS backend task definition and service..."
+
+    # Check if we have the aws/task-definition.json file
+    if [ ! -f "aws/task-definition.json" ]; then
+        print_warning "Task definition file not found at aws/task-definition.json"
+        print_warning "Skipping ECS service creation. You'll need to deploy via GitHub Actions."
+        return
+    fi
+
+    # Create a temporary task definition with account ID substituted
+    cat aws/task-definition.json | sed "s/\${AWS_ACCOUNT_ID}/$AWS_ACCOUNT_ID/g" > /tmp/task-definition-temp.json
+
+    # Check if task definition family exists
+    EXISTING_TASK_DEF=$(aws ecs describe-task-definition \
+        --task-definition hotelx-backend \
+        --region $AWS_REGION \
+        --query 'taskDefinition.taskDefinitionArn' \
+        --output text 2>/dev/null)
+
+    if [ "$EXISTING_TASK_DEF" != "None" ] && [ -n "$EXISTING_TASK_DEF" ] && [ "$EXISTING_TASK_DEF" != "" ]; then
+        print_warning "Task definition family 'hotelx-backend' already exists"
+        print_info "Latest version: $EXISTING_TASK_DEF"
+    else
+        print_info "Registering initial task definition..."
+
+        # Register the task definition (this will fail initially because there's no Docker image yet)
+        # We'll create a placeholder task definition that GitHub Actions will update
+        TASK_DEF_ARN=$(aws ecs register-task-definition \
+            --cli-input-json file:///tmp/task-definition-temp.json \
+            --region $AWS_REGION \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text 2>/dev/null)
+
+        if [ -n "$TASK_DEF_ARN" ]; then
+            print_success "Task definition registered: $TASK_DEF_ARN"
+        else
+            print_warning "Could not register task definition (this is normal if no Docker image exists yet)"
+            print_info "GitHub Actions will register the task definition on first deployment"
+            rm /tmp/task-definition-temp.json
+            return
+        fi
+    fi
+
+    rm /tmp/task-definition-temp.json
+
+    # Check if service already exists
+    EXISTING_SERVICE=$(aws ecs describe-services \
+        --cluster ${PROJECT_NAME}-prod-cluster \
+        --services hotelx-backend-service \
+        --region $AWS_REGION \
+        --query 'services[0].status' \
+        --output text 2>/dev/null)
+
+    if [ "$EXISTING_SERVICE" = "ACTIVE" ]; then
+        print_warning "ECS service 'hotelx-backend-service' already exists and is ACTIVE"
+        return
+    elif [ "$EXISTING_SERVICE" = "DRAINING" ]; then
+        print_warning "ECS service 'hotelx-backend-service' exists but is DRAINING"
+        return
+    fi
+
+    # Only create service if we successfully registered a task definition
+    if [ -z "$TASK_DEF_ARN" ]; then
+        print_info "Skipping service creation (no task definition available)"
+        print_info "Deploy via GitHub Actions to create the service"
+        return
+    fi
+
+    print_info "Creating ECS service..."
+
+    # Create the service
+    SERVICE_ARN=$(aws ecs create-service \
+        --cluster ${PROJECT_NAME}-prod-cluster \
+        --service-name hotelx-backend-service \
+        --task-definition hotelx-backend \
+        --desired-count 1 \
+        --launch-type FARGATE \
+        --platform-version LATEST \
+        --network-configuration "awsvpcConfiguration={subnets=[$PRIVATE_SUBNET_1_ID,$PRIVATE_SUBNET_2_ID],securityGroups=[$ECS_SG_ID],assignPublicIp=DISABLED}" \
+        --load-balancers "targetGroupArn=$TARGET_GROUP_ARN,containerName=hotelx-backend,containerPort=8080" \
+        --health-check-grace-period-seconds 60 \
+        --deployment-configuration "maximumPercent=200,minimumHealthyPercent=100,deploymentCircuitBreaker={enable=true,rollback=true}" \
+        --enable-execute-command \
+        --tags key=Name,value=hotelx-backend-service key=CreatedBy,value=mkurbonov \
+        --region $AWS_REGION \
+        --query 'service.serviceArn' \
+        --output text 2>/dev/null)
+
+    if [ -n "$SERVICE_ARN" ] && [ "$SERVICE_ARN" != "None" ]; then
+        print_success "ECS service created: $SERVICE_ARN"
+        print_info "Service will start once a Docker image is deployed via GitHub Actions"
+    else
+        print_warning "Could not create ECS service"
+        print_info "This is normal if no Docker image exists in ECR yet"
+        print_info "GitHub Actions will create/update the service on first deployment"
     fi
 }
 
@@ -1167,15 +1305,16 @@ print_summary() {
     echo "   - CLOUDFRONT_DISTRIBUTION_ID=$FRONTEND_CF_ID"
     echo "   - STRIPE_PUBLIC_KEY"
     echo ""
-    echo "3. Build and push Docker images to ECR:"
-    echo "   Backend: $BACKEND_REPO_URI"
-    echo "   Frontend: $FRONTEND_REPO_URI"
-    echo ""
-    echo "4. Deploy using GitHub Actions workflows"
+    echo "3. Deploy the application:"
+    echo "   - Push code to main branch to trigger GitHub Actions"
+    echo "   - OR manually build and push Docker images:"
+    echo "     Backend: $BACKEND_REPO_URI"
+    echo "     Frontend: $FRONTEND_REPO_URI"
     echo ""
     echo "💾 Full configuration saved to: infrastructure-config.txt"
     echo ""
     print_warning "Note: CloudFront distributions can take 15-20 minutes to fully deploy"
+    print_info "The ECS service will be created/updated when you deploy via GitHub Actions"
     echo ""
 }
 
@@ -1195,6 +1334,7 @@ main() {
     echo "  - DocumentDB Cluster"
     echo "  - ECR Repositories"
     echo "  - ECS Cluster"
+    echo "  - ECS Task Definition and Service (if Docker image available)"
     echo "  - Application Load Balancer"
     echo "  - S3 Bucket for frontend"
     echo "  - CloudFront Distributions"
@@ -1223,6 +1363,7 @@ main() {
     create_s3_bucket
     create_cloudfront
     create_secrets
+    create_ecs_backend_service
     save_configuration
     print_summary
 }
