@@ -39,26 +39,39 @@ jobs:
 
       - name: Inject Account ID into Task Definition
         run: |
-          sed -i "s/\${AWS_ACCOUNT_ID}/${{ secrets.AWS_ACCOUNT_ID }}/g" aws/task-definition.json
+          sed -i "s/\${AWS_ACCOUNT_ID}/${{ secrets.AWS_ACCOUNT_ID }}/g" aws/task-definition-no-secrets.json
+
+      - name: Inject Secrets into Task Definition
+        run: |
+          # Replace all placeholder values with actual secrets from GitHub
+          sed -i "s|REPLACE_WITH_MONGODB_URI|${{ secrets.DATABASE_URI }}|g" aws/task-definition-no-secrets.json
+          sed -i "s|REPLACE_WITH_JWT_SECRET|${{ secrets.JWT_SECRET }}|g" aws/task-definition-no-secrets.json
+          sed -i "s|REPLACE_WITH_STRIPE_KEY|${{ secrets.STRIPE_API_KEY }}|g" aws/task-definition-no-secrets.json
+          sed -i "s|REPLACE_WITH_WEBHOOK_SECRET|${{ secrets.STRIPE_WEBHOOK_SECRET }}|g" aws/task-definition-no-secrets.json
+          sed -i "s|REPLACE_WITH_GOOGLE_CLIENT_ID|${{ secrets.GOOGLE_CLIENT_ID }}|g" aws/task-definition-no-secrets.json
+          sed -i "s|REPLACE_WITH_GOOGLE_CLIENT_SECRET|${{ secrets.GOOGLE_CLIENT_SECRET }}|g" aws/task-definition-no-secrets.json
+          sed -i "s|REPLACE_WITH_OKTA_CLIENT_ID|${{ secrets.OKTA_CLIENT_ID }}|g" aws/task-definition-no-secrets.json
+          sed -i "s|REPLACE_WITH_OKTA_CLIENT_SECRET|${{ secrets.OKTA_CLIENT_SECRET }}|g" aws/task-definition-no-secrets.json
+          sed -i "s|REPLACE_WITH_OKTA_ISSUER|${{ secrets.OKTA_ISSUER_URI }}|g" aws/task-definition-no-secrets.json
 
       - name: Build and Push Image
         id: build-image
         run: |
           # Build the docker image
           docker build --platform linux/amd64 -t ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }} ./backend
-          
+
           # Push specific SHA tag and latest tag
           docker tag ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }} ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
-          
+
           echo "image=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: aws/task-definition.json
+          task-definition: aws/task-definition-no-secrets.json
           container-name: ${{ env.CONTAINER_NAME }}
           image: ${{ steps.build-image.outputs.image }}
 
