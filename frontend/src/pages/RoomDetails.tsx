@@ -116,8 +116,8 @@ const RoomDetails: React.FC = () => {
         >
           Back to Rooms
         </Button>
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1.3fr 1fr' }, gap: 3 }}>
-          <Box>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <Box
               sx={{
                 borderRadius: 2,
@@ -125,22 +125,24 @@ const RoomDetails: React.FC = () => {
                 border: isDarkMode ? '1px solid rgba(255,215,0,0.2)' : '1px solid',
                 borderColor: isDarkMode ? 'rgba(255,215,0,0.2)' : 'divider',
                 mb: 1.5,
+                flex: 1,
+                minHeight: 0,
               }}
             >
               <CardMedia
                 component="img"
-                height="360"
+                height="100%"
                 image={
                   selectedImage ||
                   room.imageUrl ||
                   'https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=1200'
                 }
                 alt={room.name}
-                sx={{ objectFit: 'cover' }}
+                sx={{ objectFit: 'cover', height: '100%' }}
               />
             </Box>
 
-            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1 }}>
+            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, flexShrink: 0 }}>
               {/* Main image thumbnail */}
               <Box>
                 <CardMedia
@@ -196,7 +198,7 @@ const RoomDetails: React.FC = () => {
             </Box>
           </Box>
 
-          <Box>
+          <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <Card
               sx={{
                 p: 2.5,
@@ -206,6 +208,9 @@ const RoomDetails: React.FC = () => {
                 borderRadius: 2,
                 backdropFilter: isDarkMode ? 'blur(10px)' : 'none',
                 boxShadow: isDarkMode ? 'none' : 2,
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
               }}
             >
               <Typography

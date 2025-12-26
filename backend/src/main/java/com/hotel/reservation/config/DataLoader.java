@@ -37,10 +37,20 @@ public class DataLoader implements CommandLineRunner {
             log.info("Database already contains data. Skipping initialization.");
         }
 
-        // Create default admin user if not exists
+        // Create default users if not exist
         if (userRepository.findByEmail("admin@hotel.com").isEmpty()) {
             createAdminUser();
             log.info("Default admin user created!");
+        }
+
+        if (userRepository.findByEmail("manager@hotel.com").isEmpty()) {
+            createManagerUser();
+            log.info("Default manager user created!");
+        }
+
+        if (userRepository.findByEmail("guest@hotel.com").isEmpty()) {
+            createGuestUser();
+            log.info("Default guest user created!");
         }
     }
 
@@ -293,6 +303,42 @@ public class DataLoader implements CommandLineRunner {
         log.info("Default Admin User Created:");
         log.info("Email: admin@hotel.com");
         log.info("Password: admin123");
+        log.info("=".repeat(60));
+    }
+
+    private void createManagerUser() {
+        User manager = new User();
+        manager.setEmail("manager@hotel.com");
+        manager.setPassword(passwordEncoder.encode("manager123"));
+        manager.setFirstName("Manager");
+        manager.setLastName("User");
+        manager.setPhoneNumber("+1234567891");
+        manager.setEnabled(true);
+        manager.getRoles().add(User.Role.MANAGER);
+        userRepository.save(manager);
+
+        log.info("=".repeat(60));
+        log.info("Default Manager User Created:");
+        log.info("Email: manager@hotel.com");
+        log.info("Password: manager123");
+        log.info("=".repeat(60));
+    }
+
+    private void createGuestUser() {
+        User guest = new User();
+        guest.setEmail("guest@hotel.com");
+        guest.setPassword(passwordEncoder.encode("guest123"));
+        guest.setFirstName("Guest");
+        guest.setLastName("User");
+        guest.setPhoneNumber("+1234567892");
+        guest.setEnabled(true);
+        guest.getRoles().add(User.Role.GUEST);
+        userRepository.save(guest);
+
+        log.info("=".repeat(60));
+        log.info("Default Guest User Created:");
+        log.info("Email: guest@hotel.com");
+        log.info("Password: guest123");
         log.info("=".repeat(60));
     }
 }

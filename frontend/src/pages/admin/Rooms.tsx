@@ -27,7 +27,6 @@ import {
 } from '@mui/material';
 import {
   Edit as EditIcon,
-  Visibility as ViewIcon,
   Add as AddIcon,
   People as PeopleIcon,
   AttachMoney as MoneyIcon,
@@ -281,7 +280,7 @@ const AdminRooms: React.FC = () => {
               <TableCell sx={{ fontWeight: 700, color: isDarkMode ? '#FFD700' : 'primary.main' }}>Price/Night</TableCell>
               <TableCell sx={{ fontWeight: 700, color: isDarkMode ? '#FFD700' : 'primary.main' }}>Capacity</TableCell>
               <TableCell sx={{ fontWeight: 700, color: isDarkMode ? '#FFD700' : 'primary.main' }}>Floor</TableCell>
-              <TableCell sx={{ fontWeight: 700, color: isDarkMode ? '#FFD700' : 'primary.main' }}>Occupied/Total</TableCell>
+              <TableCell sx={{ fontWeight: 700, color: isDarkMode ? '#FFD700' : 'primary.main' }}>Total/Occupied</TableCell>
               <TableCell sx={{ fontWeight: 700, color: isDarkMode ? '#FFD700' : 'primary.main' }}>Status</TableCell>
               <TableCell sx={{ fontWeight: 700, color: isDarkMode ? '#FFD700' : 'primary.main' }} align="right">
                 Actions
@@ -298,7 +297,9 @@ const AdminRooms: React.FC = () => {
               return (
                 <TableRow
                   key={room.id}
+                  onClick={() => handleViewDetails(room)}
                   sx={{
+                    cursor: 'pointer',
                     '&:hover': {
                       bgcolor: isDarkMode ? 'rgba(255,215,0,0.05)' : 'rgba(25,118,210,0.05)',
                     },
@@ -352,7 +353,7 @@ const AdminRooms: React.FC = () => {
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" sx={{ color: isDarkMode ? 'rgba(255,255,255,0.8)' : 'text.primary' }}>
-                      {occupiedCount} / {totalRooms}
+                      {totalRooms} / {occupiedCount}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -368,22 +369,8 @@ const AdminRooms: React.FC = () => {
                       }}
                     />
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell align="right" onClick={(e) => e.stopPropagation()}>
                     <Stack direction="row" spacing={1} justifyContent="flex-end">
-                      <Tooltip title="View Details">
-                        <IconButton
-                          size="small"
-                          onClick={() => handleViewDetails(room)}
-                          sx={{
-                            color: isDarkMode ? '#FFD700' : 'primary.main',
-                            '&:hover': {
-                              bgcolor: isDarkMode ? 'rgba(255,215,0,0.1)' : 'rgba(25,118,210,0.1)',
-                            },
-                          }}
-                        >
-                          <ViewIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
                       <Tooltip title="Edit Room">
                         <IconButton
                           size="small"

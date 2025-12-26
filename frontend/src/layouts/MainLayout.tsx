@@ -116,21 +116,32 @@ const MainLayout: React.FC = () => {
       onKeyDown={toggleDrawer(false)}
     >
       <List>
-        {navigationItems.map((item) => (
-          <ListItem key={item.text} disablePadding>
-            <ListItemButton
-              onClick={() => navigate(item.path)}
-              sx={{
-                '&:hover': {
-                  backgroundColor: isDarkMode ? 'rgba(255,215,0,0.1)' : 'rgba(25,118,210,0.1)',
-                },
-              }}
-            >
-              <ListItemIcon sx={{ color: isDarkMode ? '#FFD700' : 'primary.main' }}>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} sx={{ color: isDarkMode ? '#fff' : 'text.primary' }} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {navigationItems.map((item) => {
+          const isActive = location.pathname === item.path;
+          return (
+            <ListItem key={item.text} disablePadding>
+              <ListItemButton
+                onClick={() => navigate(item.path)}
+                sx={{
+                  borderLeft: isActive ? `3px solid ${isDarkMode ? '#FFD700' : '#1976d2'}` : '3px solid transparent',
+                  backgroundColor: isActive ? (isDarkMode ? 'rgba(255,215,0,0.05)' : 'rgba(25,118,210,0.05)') : 'transparent',
+                  '&:hover': {
+                    backgroundColor: isDarkMode ? 'rgba(255,215,0,0.1)' : 'rgba(25,118,210,0.1)',
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ color: isActive ? (isDarkMode ? '#FFD700' : '#1976d2') : (isDarkMode ? '#FFD700' : 'primary.main') }}>{item.icon}</ListItemIcon>
+                <ListItemText
+                  primary={item.text}
+                  sx={{
+                    color: isActive ? (isDarkMode ? '#FFD700' : '#1976d2') : (isDarkMode ? '#fff' : 'text.primary'),
+                    fontWeight: isActive ? 600 : 400,
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
       </List>
     </Box>
   );
@@ -199,21 +210,39 @@ const MainLayout: React.FC = () => {
             </Typography>
 
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, ml: 2 }}>
-              {navigationItems.map((item) => (
-                <Button
-                  key={item.text}
-                  onClick={() => navigate(item.path)}
-                  sx={{
-                    color: isDarkMode ? '#fff' : 'text.primary',
-                    '&:hover': {
-                      backgroundColor: isDarkMode ? 'rgba(255,215,0,0.1)' : 'rgba(25,118,210,0.1)',
-                      color: isDarkMode ? '#FFD700' : 'primary.main',
-                    },
-                  }}
-                >
-                  {item.text}
-                </Button>
-              ))}
+              {navigationItems.map((item) => {
+                const isActive = location.pathname === item.path;
+                return (
+                  <Button
+                    key={item.text}
+                    onClick={() => navigate(item.path)}
+                    sx={{
+                      color: isDarkMode ? '#fff' : 'text.primary',
+                      position: 'relative',
+                      '&:hover': {
+                        backgroundColor: isDarkMode ? 'rgba(255,215,0,0.1)' : 'rgba(25,118,210,0.1)',
+                        color: isDarkMode ? '#FFD700' : 'primary.main',
+                      },
+                      '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        bottom: 0,
+                        left: '10%',
+                        right: '10%',
+                        height: '2px',
+                        background: isDarkMode ? '#FFD700' : '#1976d2',
+                        transform: isActive ? 'scaleX(1)' : 'scaleX(0)',
+                        transition: 'transform 0.3s ease',
+                      },
+                      ...(isActive && {
+                        color: isDarkMode ? '#FFD700' : 'primary.main',
+                      }),
+                    }}
+                  >
+                    {item.text}
+                  </Button>
+                );
+              })}
             </Box>
 
             <Tooltip title={`Switch to ${mode === 'dark' ? 'light' : 'dark'} mode`}>
