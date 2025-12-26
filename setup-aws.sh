@@ -740,6 +740,23 @@ create_alb() {
             --query 'LoadBalancers[0].DNSName' \
             --output text \
             --region $AWS_REGION)
+
+        # Verify and fix ALB security group if needed
+        CURRENT_ALB_SG=$(aws elbv2 describe-load-balancers \
+            --load-balancer-arns $ALB_ARN \
+            --query 'LoadBalancers[0].SecurityGroups[0]' \
+            --output text \
+            --region $AWS_REGION)
+
+        if [ "$CURRENT_ALB_SG" != "$ALB_SG_ID" ]; then
+            print_warning "ALB is using incorrect security group ($CURRENT_ALB_SG), updating to $ALB_SG_ID..."
+            aws elbv2 set-security-groups \
+                --load-balancer-arn $ALB_ARN \
+                --security-groups $ALB_SG_ID \
+                --region $AWS_REGION
+            print_success "ALB security group updated"
+        fi
+
         print_success "Using existing ALB: $ALB_DNS"
     else
         print_info "Creating ALB..."
