@@ -57,7 +57,10 @@ public class DataLoader implements CommandLineRunner {
                 Arrays.asList(
                     "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800",
                     "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800",
-                    "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800"
+                    "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800",
+                    "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800",
+                    "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800",
+                    "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800"
                 ),
                 Arrays.asList("Ocean View", "King Bed", "Private Balcony", "Mini Bar", "Smart TV", "Free WiFi", "Room Service", "Luxury Bathroom")
             ),
@@ -70,7 +73,11 @@ public class DataLoader implements CommandLineRunner {
                 65,
                 Arrays.asList(
                     "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800",
-                    "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800"
+                    "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800",
+                    "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800",
+                    "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800",
+                    "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800",
+                    "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800"
                 ),
                 Arrays.asList("Work Desk", "Queen Bed", "Ergonomic Chair", "Coffee Maker", "Smart TV", "Free WiFi", "City View", "Premium Toiletries")
             ),
@@ -83,7 +90,11 @@ public class DataLoader implements CommandLineRunner {
                 95,
                 Arrays.asList(
                     "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800",
-                    "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800"
+                    "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800",
+                    "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800",
+                    "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800",
+                    "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800",
+                    "https://images.unsplash.com/photo-1571508601936-4e3f0d229c47?w=800"
                 ),
                 Arrays.asList("King Bed", "Jacuzzi Tub", "Champagne", "Rose Petals", "Fireplace", "Private Balcony", "Ocean View", "Room Service")
             ),
@@ -98,7 +109,11 @@ public class DataLoader implements CommandLineRunner {
                 40,
                 Arrays.asList(
                     "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800",
-                    "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800"
+                    "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800",
+                    "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800",
+                    "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800",
+                    "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800",
+                    "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800"
                 ),
                 Arrays.asList("Double Bed", "Air Conditioning", "Free WiFi", "Flat Screen TV", "Private Bathroom", "Daily Housekeeping")
             ),
@@ -110,7 +125,12 @@ public class DataLoader implements CommandLineRunner {
                 2,
                 40,
                 Arrays.asList(
-                    "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800"
+                    "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800",
+                    "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800",
+                    "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800",
+                    "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800",
+                    "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800",
+                    "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800"
                 ),
                 Arrays.asList("Two Single Beds", "Air Conditioning", "Free WiFi", "Flat Screen TV", "Work Desk", "Private Bathroom")
             ),
@@ -122,7 +142,12 @@ public class DataLoader implements CommandLineRunner {
                 2,
                 40,
                 Arrays.asList(
-                    "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800"
+                    "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800",
+                    "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800",
+                    "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800",
+                    "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800",
+                    "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800",
+                    "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800"
                 ),
                 Arrays.asList("Queen Bed", "City View", "Air Conditioning", "Free WiFi", "Mini Fridge", "Coffee Maker", "Private Bathroom")
             ),
@@ -138,7 +163,10 @@ public class DataLoader implements CommandLineRunner {
                 Arrays.asList(
                     "https://images.unsplash.com/photo-1591088398332-8a7791972843?w=800",
                     "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800",
-                    "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800"
+                    "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800",
+                    "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800",
+                    "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800",
+                    "https://images.unsplash.com/photo-1571508601936-4e3f0d229c47?w=800"
                 ),
                 Arrays.asList("King Bed", "Living Room", "Dining Area", "Kitchen", "Panoramic View", "Jacuzzi", "Private Balcony", "Butler Service", "Premium Minibar")
             ),
@@ -151,7 +179,11 @@ public class DataLoader implements CommandLineRunner {
                 110,
                 Arrays.asList(
                     "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800",
-                    "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800"
+                    "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800",
+                    "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800",
+                    "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800",
+                    "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800",
+                    "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800"
                 ),
                 Arrays.asList("King Bed", "Sofa Bed", "Separate Living Room", "Kitchenette", "Two Bathrooms", "Kids Welcome Pack", "Family Games", "Free WiFi")
             ),
@@ -165,7 +197,10 @@ public class DataLoader implements CommandLineRunner {
                 Arrays.asList(
                     "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800",
                     "https://images.unsplash.com/photo-1571508601936-4e3f0d229c47?w=800",
-                    "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800"
+                    "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800",
+                    "https://images.unsplash.com/photo-1591088398332-8a7791972843?w=800",
+                    "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800",
+                    "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800"
                 ),
                 Arrays.asList("King Bed", "Private Elevator", "Rooftop Terrace", "Full Kitchen", "Wine Cellar", "Home Theater", "Gym Access", "Private Chef Available")
             ),
@@ -179,7 +214,12 @@ public class DataLoader implements CommandLineRunner {
                 1,
                 25,
                 Arrays.asList(
-                    "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800"
+                    "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800",
+                    "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800",
+                    "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800",
+                    "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800",
+                    "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800",
+                    "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800"
                 ),
                 Arrays.asList("Single Bed", "Air Conditioning", "Free WiFi", "Private Bathroom", "Daily Housekeeping")
             ),
@@ -191,7 +231,12 @@ public class DataLoader implements CommandLineRunner {
                 2,
                 35,
                 Arrays.asList(
-                    "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800"
+                    "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800",
+                    "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800",
+                    "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800",
+                    "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800",
+                    "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800",
+                    "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800"
                 ),
                 Arrays.asList("Double Bed", "Garden View", "Air Conditioning", "Free WiFi", "Private Bathroom", "Daily Housekeeping", "TV")
             ),
@@ -203,7 +248,12 @@ public class DataLoader implements CommandLineRunner {
                 3,
                 45,
                 Arrays.asList(
-                    "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800"
+                    "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800",
+                    "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800",
+                    "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800",
+                    "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800",
+                    "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800",
+                    "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800"
                 ),
                 Arrays.asList("Three Single Beds", "Air Conditioning", "Free WiFi", "Private Bathroom", "Work Desk", "TV", "Mini Fridge")
             )

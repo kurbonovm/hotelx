@@ -99,7 +99,7 @@ const RoomDetails: React.FC = () => {
       sx={{
         minHeight: '100vh',
         bgcolor: 'background.default',
-        py: { xs: 4, md: 6 },
+        py: { xs: 2, md: 3 },
       }}
     >
       <Container maxWidth="lg">
@@ -107,7 +107,7 @@ const RoomDetails: React.FC = () => {
           startIcon={<ArrowBack />}
           onClick={() => navigate('/rooms')}
           sx={{
-            mb: 3,
+            mb: 2,
             color: isDarkMode ? '#FFD700' : 'primary.main',
             '&:hover': {
               backgroundColor: isDarkMode ? 'rgba(255,215,0,0.1)' : 'rgba(25,118,210,0.1)',
@@ -116,20 +116,20 @@ const RoomDetails: React.FC = () => {
         >
           Back to Rooms
         </Button>
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1.4fr 1fr' }, gap: 4 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1.3fr 1fr' }, gap: 3 }}>
           <Box>
             <Box
               sx={{
-                borderRadius: 3,
+                borderRadius: 2,
                 overflow: 'hidden',
                 border: isDarkMode ? '1px solid rgba(255,215,0,0.2)' : '1px solid',
                 borderColor: isDarkMode ? 'rgba(255,215,0,0.2)' : 'divider',
-                mb: 2,
+                mb: 1.5,
               }}
             >
               <CardMedia
                 component="img"
-                height="500"
+                height="360"
                 image={
                   selectedImage ||
                   room.imageUrl ||
@@ -145,16 +145,16 @@ const RoomDetails: React.FC = () => {
               <Box>
                 <CardMedia
                   component="img"
-                  height="140"
+                  height="90"
                   image={room.imageUrl || 'https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=400'}
                   alt={room.name}
                   sx={{
-                    borderRadius: 2,
+                    borderRadius: 1.5,
                     cursor: 'pointer',
                     border:
                       !selectedImage || selectedImage === room.imageUrl
-                        ? '3px solid #FFD700'
-                        : '3px solid rgba(255,215,0,0.2)',
+                        ? '2px solid #FFD700'
+                        : '2px solid rgba(255,215,0,0.2)',
                     transition: 'all 0.3s ease',
                     '&:hover': {
                       opacity: 0.8,
@@ -173,14 +173,14 @@ const RoomDetails: React.FC = () => {
                   <Box key={index}>
                     <CardMedia
                       component="img"
-                      height="140"
+                      height="90"
                       image={img}
                       alt={`${room.name} ${index + 1}`}
                       sx={{
-                        borderRadius: 2,
+                        borderRadius: 1.5,
                         cursor: 'pointer',
                         border:
-                          selectedImage === img ? '3px solid #FFD700' : '3px solid rgba(255,215,0,0.2)',
+                          selectedImage === img ? '2px solid #FFD700' : '2px solid rgba(255,215,0,0.2)',
                         transition: 'all 0.3s ease',
                         '&:hover': {
                           opacity: 0.8,
@@ -199,28 +199,27 @@ const RoomDetails: React.FC = () => {
           <Box>
             <Card
               sx={{
-                p: 4,
+                p: 2.5,
                 bgcolor: isDarkMode ? 'rgba(26,26,26,0.95)' : 'background.paper',
                 border: '1px solid',
                 borderColor: isDarkMode ? 'rgba(255,215,0,0.2)' : 'divider',
-                borderRadius: 3,
+                borderRadius: 2,
                 backdropFilter: isDarkMode ? 'blur(10px)' : 'none',
                 boxShadow: isDarkMode ? 'none' : 2,
               }}
             >
               <Typography
-                variant="h3"
-                gutterBottom
+                variant="h4"
                 sx={{
                   color: isDarkMode ? '#FFD700' : 'primary.main',
                   fontWeight: 700,
-                  mb: 2,
+                  mb: 1.5,
                 }}
               >
                 {room.name}
               </Typography>
 
-              <Box sx={{ mb: 3, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+              <Box sx={{ mb: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                 <Chip
                   label={room.type}
                   sx={{
@@ -228,83 +227,80 @@ const RoomDetails: React.FC = () => {
                     color: isDarkMode ? '#FFD700' : 'primary.main',
                     border: isDarkMode ? '1px solid rgba(255,215,0,0.3)' : '1px solid rgba(25,118,210,0.3)',
                     borderRadius: '16px',
-                    height: '28px',
-                    fontSize: '0.8125rem',
+                    height: '26px',
+                    fontSize: '0.8rem',
                     fontWeight: 500,
                   }}
                 />
                 {room.available ? (
-                  <Chip label="Available" color="success" sx={{ borderRadius: '16px', height: '28px' }} />
+                  <Chip label="Available" color="success" sx={{ borderRadius: '16px', height: '26px', fontSize: '0.8rem' }} />
                 ) : (
-                  <Chip label="Not Available" color="error" sx={{ borderRadius: '16px', height: '28px' }} />
+                  <Chip label="Not Available" color="error" sx={{ borderRadius: '16px', height: '26px', fontSize: '0.8rem' }} />
                 )}
               </Box>
 
               <Typography
-                variant="h4"
-                gutterBottom
+                variant="h5"
                 sx={{
                   color: isDarkMode ? '#FFD700' : 'primary.main',
                   fontWeight: 600,
-                  mb: 3,
+                  mb: 2,
                 }}
               >
                 ${room.pricePerNight}
-                <Typography component="span" variant="body1" sx={{ color: isDarkMode ? 'rgba(255,255,255,0.6)' : 'text.secondary' }}>
+                <Typography component="span" variant="body2" sx={{ color: isDarkMode ? 'rgba(255,255,255,0.6)' : 'text.secondary' }}>
                   {' '}/ night
                 </Typography>
               </Typography>
 
-              <Typography variant="body1" sx={{ color: isDarkMode ? 'rgba(255,255,255,0.8)' : 'text.primary', mb: 3 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: isDarkMode ? 'rgba(255,255,255,0.8)' : 'text.primary',
+                  mb: 2,
+                  lineHeight: 1.4,
+                }}
+              >
                 {room.description}
               </Typography>
 
-              <List dense sx={{ mb: 3 }}>
-                <ListItem sx={{ px: 0 }}>
-                  <ListItemIcon>
-                    <People sx={{ color: isDarkMode ? '#FFD700' : 'primary.main' }} />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={`Capacity: ${room.capacity} guests`}
-                    sx={{ '& .MuiListItemText-primary': { color: isDarkMode ? 'rgba(255,255,255,0.9)' : 'text.primary' } }}
-                  />
-                </ListItem>
-                <ListItem sx={{ px: 0 }}>
-                  <ListItemIcon>
-                    <AspectRatio sx={{ color: isDarkMode ? '#FFD700' : 'primary.main' }} />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={`Size: ${room.size} sq ft`}
-                    sx={{ '& .MuiListItemText-primary': { color: isDarkMode ? 'rgba(255,255,255,0.9)' : 'text.primary' } }}
-                  />
-                </ListItem>
-                <ListItem sx={{ px: 0 }}>
-                  <ListItemIcon>
-                    <Stairs sx={{ color: isDarkMode ? '#FFD700' : 'primary.main' }} />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={`Floor: ${room.floorNumber}`}
-                    sx={{ '& .MuiListItemText-primary': { color: isDarkMode ? 'rgba(255,255,255,0.9)' : 'text.primary' } }}
-                  />
-                </ListItem>
-              </List>
+              <Box sx={{ mb: 2, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  <People sx={{ color: isDarkMode ? '#FFD700' : 'primary.main', fontSize: '1.1rem' }} />
+                  <Typography variant="caption" sx={{ color: isDarkMode ? 'rgba(255,255,255,0.9)' : 'text.primary' }}>
+                    {room.capacity} guests
+                  </Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  <AspectRatio sx={{ color: isDarkMode ? '#FFD700' : 'primary.main', fontSize: '1.1rem' }} />
+                  <Typography variant="caption" sx={{ color: isDarkMode ? 'rgba(255,255,255,0.9)' : 'text.primary' }}>
+                    {room.size} sq ft
+                  </Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  <Stairs sx={{ color: isDarkMode ? '#FFD700' : 'primary.main', fontSize: '1.1rem' }} />
+                  <Typography variant="caption" sx={{ color: isDarkMode ? 'rgba(255,255,255,0.9)' : 'text.primary' }}>
+                    Floor {room.floorNumber}
+                  </Typography>
+                </Box>
+              </Box>
 
-              <Typography variant="h6" gutterBottom sx={{ color: isDarkMode ? '#FFD700' : 'primary.main', fontWeight: 600 }}>
+              <Typography variant="subtitle2" sx={{ color: isDarkMode ? '#FFD700' : 'primary.main', fontWeight: 600, mb: 1 }}>
                 Amenities
               </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 4 }}>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, mb: 2.5 }}>
                 {room.amenities?.map((amenity, index) => (
                   <Chip
                     key={index}
-                    icon={<CheckCircle sx={{ color: isDarkMode ? '#FFD700 !important' : 'primary.main' }} />}
+                    icon={<CheckCircle sx={{ color: isDarkMode ? '#FFD700 !important' : 'primary.main', fontSize: '0.9rem !important' }} />}
                     label={amenity}
                     sx={{
                       backgroundColor: isDarkMode ? 'rgba(255,215,0,0.1)' : 'rgba(25,118,210,0.1)',
                       color: isDarkMode ? 'rgba(255,255,255,0.9)' : 'text.primary',
                       border: isDarkMode ? '1px solid rgba(255,215,0,0.3)' : '1px solid rgba(25,118,210,0.3)',
-                      borderRadius: '16px',
-                      height: '28px',
-                      fontSize: '0.8125rem',
+                      borderRadius: '12px',
+                      height: '24px',
+                      fontSize: '0.75rem',
                       fontWeight: 500,
                     }}
                     size="small"
@@ -312,15 +308,15 @@ const RoomDetails: React.FC = () => {
                 ))}
               </Box>
 
-              <Box component="form" sx={{ mt: 3 }}>
-                <Typography variant="h6" gutterBottom sx={{ color: isDarkMode ? '#FFD700' : 'primary.main', fontWeight: 600, mb: 2 }}>
+              <Box component="form" sx={{ mt: 2 }}>
+                <Typography variant="subtitle2" sx={{ color: isDarkMode ? '#FFD700' : 'primary.main', fontWeight: 600, mb: 1.5 }}>
                   Select Your Stay
                 </Typography>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2, mb: 3 }}>
+                  <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 1.5, mb: 2 }}>
                     <Box>
                       <DatePicker
-                        label="Check-in Date"
+                        label="Check-in"
                         value={checkInDate}
                         onChange={(newValue) => setCheckInDate(newValue)}
                         minDate={new Date()}
@@ -400,7 +396,7 @@ const RoomDetails: React.FC = () => {
                     </Box>
                     <Box>
                       <DatePicker
-                        label="Check-out Date"
+                        label="Check-out"
                         value={checkOutDate}
                         onChange={(newValue) => setCheckOutDate(newValue)}
                         minDate={
@@ -493,10 +489,11 @@ const RoomDetails: React.FC = () => {
                       <TextField
                         fullWidth
                         type="number"
-                        label="Number of Guests"
+                        label="Guests"
                         value={guests}
                         onChange={(e) => setGuests(parseInt(e.target.value))}
                         inputProps={{ min: 1, max: room.capacity }}
+                        size="small"
                       />
                     </Box>
                   </Box>
@@ -505,19 +502,18 @@ const RoomDetails: React.FC = () => {
                 <Button
                   fullWidth
                   variant="contained"
-                  size="large"
                   onClick={handleBookNow}
                   disabled={!room.available || !checkInDate || !checkOutDate}
                   sx={{
-                    py: 1.5,
+                    py: 1.25,
                     background: isDarkMode ? 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)' : 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)',
                     color: isDarkMode ? '#000' : '#fff',
                     fontWeight: 600,
-                    fontSize: '1.1rem',
+                    fontSize: '1rem',
                     '&:hover': {
                       background: isDarkMode ? 'linear-gradient(135deg, #FFA500 0%, #FFD700 100%)' : 'linear-gradient(135deg, #42a5f5 0%, #1976d2 100%)',
                       transform: 'translateY(-2px)',
-                      boxShadow: isDarkMode ? '0 8px 20px rgba(255,215,0,0.3)' : '0 8px 20px rgba(25,118,210,0.3)',
+                      boxShadow: isDarkMode ? '0 6px 16px rgba(255,215,0,0.3)' : '0 6px 16px rgba(25,118,210,0.3)',
                     },
                     transition: 'all 0.3s ease',
                     '&.Mui-disabled': {
