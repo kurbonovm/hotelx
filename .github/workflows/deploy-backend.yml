@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'backend/**'
+      - 'aws/**'
       - '.github/workflows/deploy-backend.yml'
   workflow_dispatch:
 
