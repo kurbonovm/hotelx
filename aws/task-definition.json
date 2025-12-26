@@ -14,21 +14,22 @@
       "portMappings": [{"containerPort": 8080, "protocol": "tcp"}],
       "environment": [
         {"name": "SPRING_PROFILES_ACTIVE", "value": "prod"},
-        {"name": "FRONTEND_URL", "value": "https://d7vv9cemk0w3z.cloudfront.net"},
+        {"name": "FRONTEND_URL", "value": "https://d2psq8ngxcnouh.cloudfront.net"},
         {"name": "DATABASE_NAME", "value": "hotelx"}
       ],
       "secrets": [
-        {"name": "DATABASE_URI", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/prod/documentdb-connection-uri-ROC0dD"},
-        {"name": "JWT_SECRET", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/jwt-secret-MRFiPc"},
+        {"name": "DATABASE_URI", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/prod/documentdb-connection-uri-fOJ01s"},
+        {"name": "JWT_SECRET", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/jwt-secret-WbpyCN"},
         {"name": "JWT_EXPIRATION", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/jwt-expiration-r52S8N"},
-        {"name": "STRIPE_API_KEY", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/stripe-api-key-mXzdl3"},
-        {"name": "STRIPE_WEBHOOK_SECRET", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/stripe-webhook-secret-pBzA9O"},
-        {"name": "GOOGLE_CLIENT_ID", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/google-client-id-YA7gjn"},
-        {"name": "GOOGLE_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/google-client-secret-y57Z1N"},
-        {"name": "OKTA_CLIENT_ID", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/okta-client-id-XXXXXX"},
-        {"name": "OKTA_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/okta-client-secret-XXXXXX"},
-        {"name": "OKTA_ISSUER_URI", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/okta-issuer-uri-XXXXXX"},
-        {"name": "BACKEND_URL", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/backend-url-Qz2w62"}
+        {"name": "STRIPE_API_KEY", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/stripe-api-key-pbwqTo"},
+        {"name": "STRIPE_WEBHOOK_SECRET", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/stripe-webhook-secret-hp4NqD"},
+        {"name": "GOOGLE_CLIENT_ID", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/google-client-id-lXJvga"},
+        {"name": "GOOGLE_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/google-client-secret-xsueYR"},
+        {"name": "OKTA_CLIENT_ID", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/okta-client-id-s8H2Nk"},
+        {"name": "OKTA_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/okta-client-secret-CPFbMK"},
+        {"name": "OKTA_ISSUER_URI", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/okta-issuer-uri-OZN99Y"},
+        {"name": "BACKEND_URL", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/backend-url-tLcc6F"},
+        {"name": "ALLOWED_ORIGINS", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/allowed-origins-zsEBrH"}
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
