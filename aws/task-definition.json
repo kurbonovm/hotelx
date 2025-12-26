@@ -29,7 +29,7 @@
         {"name": "OKTA_CLIENT_SECRET", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/okta-client-secret-CPFbMK"},
         {"name": "OKTA_ISSUER_URI", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/okta-issuer-uri-OZN99Y"},
         {"name": "BACKEND_URL", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/backend-url-tLcc6F"},
-        {"name": "ALLOWED_ORIGINS", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/allowed-origins-zsEBrH"}
+        {"name": "CORS_ALLOWED_ORIGINS", "valueFrom": "arn:aws:secretsmanager:us-east-1:${AWS_ACCOUNT_ID}:secret:hotelx/allowed-origins-zsEBrH"}
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
